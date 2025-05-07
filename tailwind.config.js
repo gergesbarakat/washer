@@ -10,6 +10,7 @@ export default {
     ],
 
     theme: {
+        darkMode: 'false',
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],

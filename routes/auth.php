@@ -9,10 +9,37 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+
+
+use App\Http\Controllers\Admin_Auth\AdminAuthenticatedSessionController;
+use App\Http\Controllers\Admin_Auth\AdminConfirmablePasswordController;
+use App\Http\Controllers\Admin_Auth\AdminEmailVerificationNotificationController;
+use App\Http\Controllers\Admin_Auth\AdminEmailVerificationPromptController;
+use App\Http\Controllers\Admin_Auth\AdminNewPasswordController;
+use App\Http\Controllers\Admin_Auth\AdminPasswordController;
+use App\Http\Controllers\Admin_Auth\AdminPasswordResetLinkController;
+use App\Http\Controllers\Admin_Auth\AdminRegisteredUserController;
+use App\Http\Controllers\Admin_Auth\AdminVerifyEmailController;
+
+
+use App\Http\Controllers\Courier_Auth\CourierAuthenticatedSessionController;
+use App\Http\Controllers\Courier_Auth\CourierConfirmablePasswordController;
+use App\Http\Controllers\Courier_Auth\CourierEmailVerificationNotificationController;
+use App\Http\Controllers\Courier_Auth\CourierEmailVerificationPromptController;
+use App\Http\Controllers\Courier_Auth\CourierNewPasswordController;
+use App\Http\Controllers\Courier_Auth\CourierPasswordController;
+use App\Http\Controllers\Courier_Auth\CourierPasswordResetLinkController;
+use App\Http\Controllers\Courier_Auth\CourierRegisteredUserController;
+use App\Http\Controllers\Courier_Auth\CourierVerifyEmailController;
+
+use App\Models\Admin;
+use App\Models\User;
+
+use App\Models\Courier;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
+Route::prefix('user')->name('user.')->group(function () {
+    Route::get('register', action: [RegisteredUserController::class, 'create'])
         ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
@@ -35,7 +62,54 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
-Route::middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('register', action: [AdminRegisteredUserController::class, 'create'])
+        ->name('register');
+
+    Route::post('register', [AdminRegisteredUserController::class, 'store']);
+
+    Route::get('login', [AdminAuthenticatedSessionController::class, 'create'])
+        ->name('login');
+
+    Route::post('login', [AdminAuthenticatedSessionController::class, 'store']);
+
+    Route::get('forgot-password', [AdminPasswordResetLinkController::class, 'create'])
+        ->name('password.request');
+
+    Route::post('forgot-password', [AdminPasswordResetLinkController::class, 'store'])
+        ->name('password.email');
+
+    Route::get('reset-password/{token}', [AdminNewPasswordController::class, 'create'])
+        ->name('password.reset');
+
+    Route::post('reset-password', [AdminNewPasswordController::class, 'store'])
+        ->name('password.store');
+});
+Route::prefix('courier')->name('courier.')->group(function () {
+    Route::get('register', action: [CourierRegisteredUserController::class, 'create'])
+        ->name('register');
+
+    Route::post('register', [CourierRegisteredUserController::class, 'store']);
+
+    Route::get('login', [CourierAuthenticatedSessionController::class, 'create'])
+        ->name('login');
+
+    Route::post('login', [CourierAuthenticatedSessionController::class, 'store']);
+
+    Route::get('forgot-password', [CourierPasswordResetLinkController::class, 'create'])
+        ->name('password.request');
+
+    Route::post('forgot-password', [CourierPasswordResetLinkController::class, 'store'])
+        ->name('password.email');
+
+    Route::get('reset-password/{token}', [CourierNewPasswordController::class, 'create'])
+        ->name('password.reset');
+
+    Route::post('reset-password', [CourierNewPasswordController::class, 'store'])
+        ->name('password.store');
+});
+
+Route::prefix('user')->name('user.')->middleware('auth:user')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
@@ -55,5 +129,56 @@ Route::middleware('auth')->group(function () {
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
+});
+
+
+
+
+Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('verify-email', AdminEmailVerificationPromptController::class)
+        ->name('verification.notice');
+
+    Route::get('verify-email/{id}/{hash}', AdminVerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
+    Route::post('email/verification-notification', [AdminEmailVerificationNotificationController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+
+    Route::get('confirm-password', [AdminConfirmablePasswordController::class, 'show'])
+        ->name('password.confirm');
+
+    Route::post('confirm-password', [AdminConfirmablePasswordController::class, 'store']);
+
+    Route::put('password', [AdminPasswordController::class, 'update'])->name('password.update');
+
+    Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
+});
+
+
+
+Route::middleware('auth:courier')->prefix('courier')->name('courier.')->group(function () {
+    Route::get('verify-email', CourierEmailVerificationPromptController::class)
+        ->name('verification.notice');
+
+    Route::get('verify-email/{id}/{hash}', CourierVerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
+    Route::post('email/verification-notification', [CourierEmailVerificationNotificationController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+
+    Route::get('confirm-password', [CourierConfirmablePasswordController::class, 'show'])
+        ->name('password.confirm');
+
+    Route::post('confirm-password', [CourierConfirmablePasswordController::class, 'store']);
+
+    Route::put('password', [CourierPasswordController::class, 'update'])->name('password.update');
+
+    Route::post('logout', [CourierAuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
