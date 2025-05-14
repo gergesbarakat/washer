@@ -23,7 +23,7 @@ class CourierUpdateRequest extends FormRequest
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(Courier::class)->ignore($this->user()->id),
+                Rule::unique(Courier::class)->ignore($this->user('courier')->id),
             ],
         ];
     }

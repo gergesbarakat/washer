@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\UserResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -21,8 +22,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'branch_id',
+        'street',
+        'city',
+        'state',
+        'zip_code',
+        'country',
     ];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -44,5 +50,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new UserResetPasswordNotification($token));
     }
 }

@@ -15,7 +15,7 @@ class CourierEmailVerificationPromptController extends Controller
     public function __invoke(Request $request): RedirectResponse|View
     {
         return $request->user()->hasVerifiedEmail()
-                    ? redirect()->intended(route('coureir.dashboard', absolute: false))
+                    ? redirect()->intended(route('dashboard', absolute: false))
                     : view('courier-auth.verify-email');
     }
 }

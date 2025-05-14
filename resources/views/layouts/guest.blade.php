@@ -19,22 +19,59 @@
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
+    @if ($errors->any())
+        <div class = "absolute top-10 w-auto  right-2 z-100 p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+            role="alert">
+            <span class = "font-medium">Danger alert!</span> {{ implode(' | ', $errors->all()) }}
 
+        </div>
+    @endif
+    @if (session('status'))
+        <div class = "  absolute top-10 w-auto right-2 z-100 p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+            role="alert">
+            <span class = "font-medium">Success ! {{ session('status') }}</span>
 
-             {{ $slot }}
-  </body>
+        </div>
+    @endif
+
+    {{ $slot }}
+</body>
 <script>
-    const togglePassword = document.getElementById('togglePassword');
-    const password = document.getElementById('password');
-
-    togglePassword.addEventListener('click', function() {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
-        this.classList.toggle('fa-eye-slash');
-    });
     tailwind.config = {
-        darkMode: 'false',
+        darkMode: 'class',
+        /* 'class' or 'media', we use 'class' to enable dark mode manually */
     }
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('input[type="password"]').forEach(function(input) {
+            // Create eye icon wrapper
+             const wrapper = document.createElement('div');
+            wrapper.classList.add('relative');
+
+            // Clone the input and insert into wrapper
+            const clonedInput = input.cloneNode(true);
+            input.replaceWith(wrapper);
+            wrapper.appendChild(clonedInput);
+
+            // Create the toggle icon
+            const toggleIcon = document.createElement('span');
+            toggleIcon.innerHTML = '👁️'; // You can use a better SVG/icon if needed
+            toggleIcon.classList.add(
+                'absolute', 'right-2', 'top-1/2', '-translate-y-1/2', 'cursor-pointer'
+            );
+            wrapper.appendChild(toggleIcon);
+
+            // Toggle logic
+            toggleIcon.addEventListener('click', () => {
+                if (clonedInput.type === 'password') {
+                    clonedInput.type = 'text';
+                    toggleIcon.innerHTML = '🙈'; // icon changes when visible
+                } else {
+                    clonedInput.type = 'password';
+                    toggleIcon.innerHTML = '👁️';
+                }
+            });
+        });
+    });
 </script>
 
 </html>

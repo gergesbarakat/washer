@@ -8,12 +8,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
+use App\Models\Courier;
+use App\Models\Branch;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
+
+    public function create()
+    {
+        $hotels = User::where('role', 'hotel')->get(); // fetch all hotels from users
+        $branches = Branch::all();
+        $couriers = Courier::all();
+
+        return view('admin.parcels.create', [
+            'hotels' => $hotels,
+            'branches' => $branches,
+            'couriers' => $couriers,
+        ]);
+    }
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -21,7 +37,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
+    /**aa
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
@@ -34,7 +50,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('user.profile.edit')->with('status', 'profile-updated');
     }
 
     /**

@@ -1,95 +1,210 @@
 <x-AdminApp-layout>
+    <div class="p-8 max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Create New Parcel</h2>
 
-    <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center py-4">
-            <h1 class="text-2xl font-bold">Add Parcel</h1>
-        </div>
-
-        <form action="{{ route('admin.parcels.store') }}" method="POST">
+        <form method="POST" action="{{ route('admin.parcels.store') }}" class="space-y-6">
             @csrf
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <h2 class="font-semibold text-lg mb-2">Sender Information</h2>
-                    <input type="text" name="sender_name" placeholder="Sender Name"
-                        class="w-full border rounded p-2 mb-2" required>
-                    <input type="text" name="sender_address" placeholder="Sender Address"
-                        class="w-full border rounded p-2 mb-2" required>
-                    <input type="text" name="sender_contact" placeholder="Sender Contact"
-                        class="w-full border rounded p-2 mb-2" required>
-                </div>
-                <div>
-                    <h2 class="font-semibold text-lg mb-2">Recipient Information</h2>
-                    <input type="text" name="recipient_name" placeholder="Recipient Name"
-                        class="w-full border rounded p-2 mb-2" required>
-                    <input type="text" name="recipient_address" placeholder="Recipient Address"
-                        class="w-full border rounded p-2 mb-2" required>
-                    <input type="text" name="recipient_contact" placeholder="Recipient Contact"
-                        class="w-full border rounded p-2 mb-2" required>
-                </div>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            {{-- Hotel / Branch / Courier / Status --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                    <label class="block mb-1">Courier</label>
-                    <select name="courier_id" class="w-full border rounded p-2" required>
-                        @foreach ($couriers as $courier)
-                            <option value="{{ $courier->id }}">{{ $courier->firstname }} {{ $courier->lastname }}
-                            </option>
+                    <label for="hotel_id" class="block text-sm font-medium text-gray-700 mb-1">Hotel</label>
+                    <select name="hotel_id" id="hotel_id"
+                        class="w-full px-4 py-2 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        @foreach ($hotels as $hotel)
+                            <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
                         @endforeach
                     </select>
                 </div>
+
                 <div>
-                    <label class="block mb-1">Type</label>
-                    <select name="type" class="w-full border rounded p-2" required>
-                        <option value="1">Deliver</option>
-                        <option value="0">Pickup</option>
+                    <label for="branch_id" class="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+                    <select name="branch_id" id="branch_id"
+                        class="w-full px-4 py-2 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        @foreach ($branches as $branch)
+                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="courier_id" class="block text-sm font-medium text-gray-700 mb-1">Courier</label>
+                    <select name="courier_id" id="courier_id"
+                        class="w-full px-4 py-2 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        @foreach ($couriers as $courier)
+                            <option value="{{ $courier->id }}">{{ $courier->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select name="status" id="status"
+                        class="w-full px-4 py-2 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="pending">Pending</option>
+                        <option value="in_transit">In Transit</option>
+                        <option value="delivered">Delivered</option>
                     </select>
                 </div>
             </div>
 
-            <h2 class="font-semibold text-lg mt-6 mb-2">Parcel Items</h2>
-            <div id="items-container">
-                <div class="grid grid-cols-5 gap-2 mb-2">
-                    <input type="text" name="weight[]" placeholder="Weight" class="border rounded p-2" required>
-                    <input type="text" name="height[]" placeholder="Height" class="border rounded p-2" required>
-                    <input type="text" name="length[]" placeholder="Length" class="border rounded p-2" required>
-                    <input type="text" name="width[]" placeholder="Width" class="border rounded p-2" required>
-                    <input type="text" name="price[]" placeholder="Price" class="border rounded p-2" required>
-                </div>
+            {{-- Product Search --}}
+            <div>
+                <label for="productSearch" class="block text-sm font-medium text-gray-700 mb-1">Search Products</label>
+                <input type="text" id="productSearch" placeholder="Type to search products..."
+                    class="w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <ul id="productResults"
+                    class="hidden border border-gray-300 bg-white rounded-lg mt-1 shadow max-h-60 overflow-y-auto z-10 relative">
+                </ul>
             </div>
-            <button type="button" onclick="addItem()"
-                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4">Add Item</button>
 
-            <div class="flex justify-end">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save
-                    Parcel</button>
+            {{-- Product Table --}}
+            <div class="overflow-x-auto border border-gray-200 rounded-lg shadow-sm">
+                <table id="productTable" class="min-w-full bg-white text-sm text-left text-gray-700">
+                    <thead class="bg-gray-100 text-gray-800 uppercase text-xs font-semibold">
+                        <tr>
+                            <th class="px-6 py-3">Product</th>
+                            <th class="px-6 py-3">Category</th>
+                            <th class="px-6 py-3">Price</th>
+                            <th class="px-6 py-3">Quantity</th>
+                            <th class="px-6 py-3">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- Submit --}}
+            <div class="text-right">
+                <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-sm transition duration-150">
+                    Save Parcel
+                </button>
             </div>
         </form>
     </div>
 
-    @push('scripts')
-        <script>
-            function addItem() {
-                const container = document.getElementById('items-container');
-                const item = document.createElement('div');
-                item.classList.add('grid', 'grid-cols-5', 'gap-2', 'mb-2');
-                item.innerHTML = `
-                <input type="text" name="weight[]" placeholder="Weight" class="border rounded p-2" required>
-                <input type="text" name="height[]" placeholder="Height" class="border rounded p-2" required>
-                <input type="text" name="length[]" placeholder="Length" class="border rounded p-2" required>
-                <input type="text" name="width[]" placeholder="Width" class="border rounded p-2" required>
-                <input type="text" name="price[]" placeholder="Price" class="border rounded p-2" required>
-            `;
-                container.appendChild(item);
+    {{-- Script --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('productSearch');
+            const resultsList = document.getElementById('productResults');
+            const productTableBody = document.querySelector('#productTable tbody');
+
+            searchInput.addEventListener('keyup', function() {
+                const query = this.value.trim();
+                if (query.length < 1) {
+                    resultsList.classList.add('hidden');
+                    resultsList.innerHTML = '';
+                    return;
+                }
+
+                fetch(`{{ url('/admin/products/search') }}?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(products => {
+                        resultsList.innerHTML = '';
+                        if (products.length === 0) {
+                            resultsList.innerHTML =
+                                '<li class="px-4 py-2 text-sm text-gray-500">No results found</li>';
+                        } else {
+                            products.forEach(product => {
+                                const li = document.createElement('li');
+                                li.className = 'px-4 py-2 hover:bg-blue-100 cursor-pointer';
+                                li.textContent =
+                                    `${product.name} (${product.category.name}) - $${product.price}`;
+                                li.dataset.id = product.id;
+                                li.dataset.name = product.name;
+                                li.dataset.category = product.category.name;
+                                li.dataset.price = product.price;
+                                li.addEventListener('click', () => {
+                                    addProductRow(product);
+                                    resultsList.classList.add('hidden');
+                                    searchInput.value = '';
+                                });
+                                resultsList.appendChild(li);
+                            });
+                        }
+                        resultsList.classList.remove('hidden');
+                    });
+            });
+
+            function addProductRow(product) {
+                const existingRow = document.getElementById(`product-row-${product.id}`);
+                if (existingRow) {
+                    existingRow.remove(); // Remove if already exists
+                }
+
+                // Remove no-data row
+                const noDataRow = productTableBody.querySelector('.no-data');
+                if (noDataRow) noDataRow.remove();
+
+                const tr = document.createElement('tr');
+                tr.id = `product-row-${product.id}`;
+                tr.className = 'hover:bg-gray-50';
+
+                tr.innerHTML = `
+                    <td class="px-6 py-3">
+                        ${product.name}
+                        <input type="hidden" name="products[${product.id}][id]" value="${product.id}">
+                    </td>
+                    <td class="px-6 py-3">${product.category.name}</td>
+                    <td class="px-6 py-3">$${product.price}</td>
+                    <td class="px-6 py-3">
+                        <input type="number" name="products[${product.id}][quantity]" value="1" min="1" class="w-20 border-gray-300 rounded">
+                    </td>
+                    <td class="px-6 py-3">
+                        <button type="button" class="text-red-500 hover:underline" onclick="this.closest('tr').remove(); checkNoDataRow();">
+                            Remove
+                        </button>
+                    </td>
+                `;
+
+                productTableBody.appendChild(tr);
             }
-        </script>
-    @endpush
 
+            window.checkNoDataRow = function() {
+                if (productTableBody.querySelectorAll('tr').length === 0) {
+                    const noDataRow = document.createElement('tr');
+                    noDataRow.className = 'no-data';
+                    noDataRow.innerHTML =
+                        `No products added`;
+                    productTableBody.appendChild(noDataRow);
+                }
+            };
+        });
+        document.getElementById('parcel-form').addEventListener('submit', function(e) {
+            e.preventDefault();
 
+            const form = e.target;
+            const formData = new FormData(form);
 
-
-
-
-
-
+            fetch("{{ route('admin.parcels.store') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': formData.get('_token'),
+                        'Accept': 'application/json',
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const alert = document.getElementById('form-alert');
+                    if (data.success) {
+                        alert.textContent = 'Parcel saved successfully.';
+                        alert.className = 'text-green-600';
+                        form.reset();
+                        // Optional: redirect or update UI
+                    } else {
+                        alert.textContent = data.message || 'Failed to save parcel.';
+                        alert.className = 'text-red-600';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('form-alert').textContent = 'Something went wrong.';
+                    document.getElementById('form-alert').className = 'text-red-600';
+                });
+        });
+    </script>
 </x-AdminApp-layout>

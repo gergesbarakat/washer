@@ -6,18 +6,22 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller {
-    public function index() {
+class ProductController extends Controller
+{
+    public function index()
+    {
         $products = Product::with('category')->get();
         return view('admin.products.index', compact('products'));
     }
 
-    public function create() {
+    public function create()
+    {
         $categories = Category::all();
         return view('admin.products.create', compact('categories'));
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'name' => 'required',
             'price' => 'required|numeric',
@@ -27,12 +31,14 @@ class ProductController extends Controller {
         return redirect()->route('admin.products.index')->with('success', 'Product created.');
     }
 
-    public function edit(Product $product) {
+    public function edit(Product $product)
+    {
         $categories = Category::all();
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
-    public function update(Request $request, Product $product) {
+    public function update(Request $request, Product $product)
+    {
         $request->validate([
             'name' => 'required',
             'price' => 'required|numeric',
@@ -40,5 +46,15 @@ class ProductController extends Controller {
         ]);
         $product->update($request->only('name', 'description', 'price', 'category_id'));
         return redirect()->route('admin.products.index')->with('success', 'Product updated.');
+    }
+
+    public function show(Request $request)
+    {
+         $query = $request->get('q');
+        $products = Product::with('category')
+            ->where('name', 'like', "%$query%")
+            ->limit(10)
+            ->get();
+         return response()->json($products);
     }
 }

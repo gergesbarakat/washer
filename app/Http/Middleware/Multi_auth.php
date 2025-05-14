@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class Multi_auth
 {
@@ -15,6 +16,11 @@ class Multi_auth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        if (Auth::guard('user')->check() || Auth::guard('courier')->check() || Auth::guard('admin')->check()) {
+
+            return $next($request);
+        } else {
+            return redirect()->to('user/login');
+        }
     }
 }

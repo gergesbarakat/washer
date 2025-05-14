@@ -15,5 +15,10 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
-
+    public function parcels()
+    {
+        return $this->belongsToMany(Parcel::class, 'parcel_items')
+            ->withPivot('quantity')
+            ->withTimestamps();
+    }
 }

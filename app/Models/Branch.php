@@ -9,4 +9,18 @@ class Branch extends Model
 {
     /** @use HasFactory<\Database\Factories\BranchFactory> */
     use HasFactory;
+    protected $fillable = [
+        'name',
+        'street',
+        'city',
+        'state',
+        'zip_code',
+        'country',
+        'contact'
+    ];
+
+    public function couriers()
+    {
+        return $this->hasMany(Courier::class);
+    }
 }

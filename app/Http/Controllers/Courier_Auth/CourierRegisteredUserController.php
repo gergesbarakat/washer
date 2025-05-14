@@ -45,6 +45,6 @@ class CourierRegisteredUserController extends Controller
 
         Auth::guard('courier')->login($user);
 
-        return redirect(route('courier.dashboard', absolute: false));
+        return redirect(route('dashboard', absolute: false));
     }
 }

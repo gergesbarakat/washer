@@ -23,7 +23,7 @@ class AdminUpdateRequest extends FormRequest
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(Admin::class)->ignore($this->user()->id),
+                Rule::unique(Admin::class)->ignore($this->user('admin')->id),
             ],
         ];
     }

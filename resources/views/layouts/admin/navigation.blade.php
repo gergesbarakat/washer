@@ -214,17 +214,17 @@
                     </div>
                     <div class="p-2 md:block text-left">
                         <h2 class="text-sm font-semibold text-gray-800">{{ Auth::guard('admin')->user()->name }}</h2>
-                        <p class="text-xs text-gray-500">Administrator</p>
+                        <p class="text-xs text-gray-500">Hotel</p>
                     </div>
                 </button>
                 <ul
                     class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px]">
                     <li>
-                        <a href="{{ route('user.profile.edit') }}"
+                        <a href="{{ route('admin.profile.edit') }}"
                             class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50">Profile</a>
                     </li>
                     <li>
-                        <a href="{{ route('user.profile.edit') }}"
+                        <a href="{{ route('admin.profile.edit') }}"
                             class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50">Settings</a>
                     </li>
                     <li>

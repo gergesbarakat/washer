@@ -4,3 +4,6 @@ export default {
         autoprefixer: {},
     },
 };
+mix.postCss('resources/css/app.css', 'public/css', [
+    require('postcss-custom-properties')
+]);

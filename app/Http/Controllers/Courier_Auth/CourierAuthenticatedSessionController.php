@@ -28,7 +28,7 @@ class CourierAuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('courier.dashboard', absolute: false));
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**
@@ -36,10 +36,12 @@ class CourierAuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-         $request->session()->invalidate();
+        Auth::guard('courier')->logout();
+
+        $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return redirect('/courier');
+        return redirect('/courier/login');
     }
 }

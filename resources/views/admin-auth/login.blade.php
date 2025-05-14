@@ -16,7 +16,7 @@
 
             </div>
             <div class="w-full mx-auto px-20 flex-col items-center space-y-6">
-                <h1 class="text-white font-bold text-4xl font-sans">Simple App</h1>
+                <h1 class="text-white font-bold text-4xl font-sans">Admin Login</h1>
                 <p class="text-white mt-1">The simplest app to use</p>
             </div>
         </div>
@@ -48,7 +48,7 @@
                     </div>
                     <button type="submit"
                         class="block w-full bg-indigo-600 mt-5 py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Login</button>
-                    <a class="flex justify-between mt-4" href="{{ route('admin.password.request') }}">
+                    <a class="flex justify-between mt-4" href="{{ route('courier.password.request') }}">
                         <span
                             class="text-sm ml-2 hover:text-blue-500 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Forgot
                             Password ?</span>

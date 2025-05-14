@@ -16,7 +16,7 @@
 
             </div>
             <div class="w-full mx-auto px-20 flex-col items-center space-y-6">
-                <h1 class="text-white font-bold text-4xl font-sans">Simple App</h1>
+                <h1 class="text-white font-bold text-4xl font-sans">Courier Login</h1>
                 <p class="text-white mt-1">The simplest app to use</p>
                 <div class="flex justify-center lg:justify-start mt-6">
                     <a href="#"
@@ -27,8 +27,9 @@
         </div>
         <div class="flex w-full lg:w-1/2 justify-center items-center bg-white space-y-8">
             <div class="w-full px-8 md:px-32 lg:px-24">
-                <form class="bg-white rounded-md shadow-2xl p-5">
-                    <h1 class="text-gray-800 font-bold text-2xl mb-1">Hello Again!</h1>
+                <form class="bg-white rounded-md shadow-2xl p-5" method="POST" action='{{ route('courier.login') }}'>
+                    @csrf
+                    <h1 class="text-gray-800 font-bold text-2xl mb-1">Courier Login</h1>
                     <p class="text-sm font-normal text-gray-600 mb-8">Welcome Back</p>
                     <div class="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"

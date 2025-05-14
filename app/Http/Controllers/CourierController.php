@@ -2,59 +2,105 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CourierUpdateRequest;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\Controller;
+use App\Models\Courier;
+use App\Models\Branch;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
 
 class CourierController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Display a listing of the couriers.
      */
-    public function edit(Request $request): View
+    public function index()
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
-    }
+        $couriers = Courier::with('branch')->get();
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(CourierUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Check for any couriers without a branch and provide fallback logic if needed
+        foreach ($couriers as $courier) {
+            if (!$courier->branch) {
+                $courier->branch_name = 'No Branch Assigned'; // Set a fallback value
+            } else {
+                $courier->branch_name = $courier->branch->name;
+            }
         }
 
-        $request->user()->save();
+        return view('admin.couriers.index', compact('couriers'));
+        }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    /**
+     * Show the form for creating a new courier.
+     */
+    public function create()
+    {
+        $branches = Branch::all(); // Get all branches for selection
+        return view('admin.couriers.create', compact('branches'));
     }
 
     /**
-     * Delete the user's account.
+     * Store a newly created courier in the database.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
+        // Validate incoming request
+        $request->validate([
+            'name' => 'required|string|max:255|unique:couriers,name', // Validate name
+            'email' => 'required|email|unique:couriers,email', // Ensure unique email
+            'password' => 'required|string|min:8|confirmed', // Password confirmation and length validation
+            'branch_id' => 'required|exists:branches,id', // Ensure valid branch_id
         ]);
 
-        $user = $request->user();
+        // Create new courier with validated data
+        Courier::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password), // Hash the password
+            'branch_id' => $request->branch_id,
+        ]);
 
-        Auth::guard('courier')->logout();
+        return redirect()->route('admin.couriers.index')->with('success', 'Courier created successfully.');
+    }
 
-        $user->delete();
+    /**
+     * Show the form for editing the specified courier.
+     */
+    public function edit(Courier $courier)
+    {
+        $branches = Branch::all(); // Get all branches for selection
+        return view('admin.couriers.edit', compact('courier', 'branches'));
+    }
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    /**
+     * Update the specified courier in the database.
+     */
+    public function update(Request $request, Courier $courier)
+    {
+        // Validate incoming request
+        $request->validate([
+            'name' => 'required|string|max:255|unique:couriers,name,' . $courier->id, // Validate name and ignore the current courier's name
+            'email' => 'required|email|unique:couriers,email,' . $courier->id, // Ensure unique email, ignoring current courier
+            'password' => 'nullable|string|min:8|confirmed', // Allow password update if provided
+            'branch_id' => 'required|exists:branches,id', // Ensure valid branch_id
+        ]);
 
-        return Redirect::to('/courier');
+        // Update the courier with validated data
+        $courier->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password ? bcrypt($request->password) : $courier->password, // Hash password only if it's updated
+            'branch_id' => $request->branch_id,
+        ]);
+
+        return redirect()->route('admin.couriers.index')->with('success', 'Courier updated successfully.');
+    }
+
+    /**
+     * Remove the specified courier from the database.
+     */
+    public function destroy(Courier $courier)
+    {
+        // Delete the courier
+        $courier->delete();
+        return redirect()->route('admin.couriers.index')->with('success', 'Courier deleted successfully.');
     }
 }

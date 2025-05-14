@@ -35,6 +35,6 @@ class CourierConfirmablePasswordController extends Controller
 
         $request->session()->put('auth.password_confirmed_at', time());
 
-        return redirect()->intended(route('courier.dashboard', absolute: false));
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 }
