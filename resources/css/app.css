@@ -5,6 +5,13 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal;
+    font-weight: normal;
+    src: url("{{ asset('fonts/Cairo-Regular.ttf') }}") format('truetype');
+}
+
 *,
 :before,
 :after {
@@ -3795,10 +3802,6 @@ video {
 
 .align-middle {
     vertical-align: middle;
-}
-
-.font-inter {
-    font-family: 'Inter', sans-serif;
 }
 
 .text-2xl {

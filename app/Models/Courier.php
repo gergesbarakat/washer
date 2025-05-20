@@ -23,6 +23,7 @@ class Courier extends Authenticatable
         'email',
         'password',
         'branch_id',
+        'status',
 
     ];
 

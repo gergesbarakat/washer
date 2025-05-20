@@ -26,14 +26,14 @@ class CourierController extends Controller
         }
 
         return view('admin.couriers.index', compact('couriers'));
-        }
+    }
 
     /**
      * Show the form for creating a new courier.
      */
     public function create()
     {
-        $branches = Branch::all(); // Get all branches for selection
+        $branches = Branch::where('status', '1')->get(); // Get all branches for selection
         return view('admin.couriers.create', compact('branches'));
     }
 
@@ -66,7 +66,7 @@ class CourierController extends Controller
      */
     public function edit(Courier $courier)
     {
-        $branches = Branch::all(); // Get all branches for selection
+        $branches = Branch::where('status', '1')->get(); // Get all branches for selection
         return view('admin.couriers.edit', compact('courier', 'branches'));
     }
 
@@ -93,14 +93,22 @@ class CourierController extends Controller
 
         return redirect()->route('admin.couriers.index')->with('success', 'Courier updated successfully.');
     }
+    public function activate($id)
+    {
+        $hotel = Courier::findOrFail($id);
+        $hotel->status = 1;
+        $hotel->save();
 
+        return redirect()->route('admin.couriers.index')->with('success', 'Hotel activated successfully.');
+    }
     /**
      * Remove the specified courier from the database.
      */
     public function destroy(Courier $courier)
     {
         // Delete the courier
-        $courier->delete();
-        return redirect()->route('admin.couriers.index')->with('success', 'Courier deleted successfully.');
+        $courier->update(['status' => '0']);
+
+        return redirect()->route('admin.couriers.index')->with('success', 'courier has been deactivated instead of deleted.');
     }
 }

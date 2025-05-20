@@ -6,7 +6,7 @@
                     <div class="flex items-center mb-1">
                         <div class="text-2xl font-semibold">2</div>
                     </div>
-                    <div class="text-sm font-medium text-gray-400">Users</div>
+                    <div class="text-sm font-medium text-gray-400">hotels</div>
                 </div>
                 <div class="dropdown">
                     <button type="button" class="dropdown-toggle text-gray-400 hover:text-gray-600"><i
@@ -35,12 +35,13 @@
             <div class="flex justify-between mb-4">
                 <div>
                     <div class="flex items-center mb-1">
-                        <div class="text-2xl font-semibold">100</div>
+                        <div class="text-2xl font-semibold"> {{ count($courier) }}</td>
+                        </div>
                         <div
                             class="p-1 rounded bg-emerald-500/10 text-emerald-500 text-[12px] font-semibold leading-none ml-2">
                             +30%</div>
                     </div>
-                    <div class="text-sm font-medium text-gray-400">Companies</div>
+                    <div class="text-sm font-medium text-gray-400">Couriers</div>
                 </div>
                 <div class="dropdown">
                     <button type="button" class="dropdown-toggle text-gray-400 hover:text-gray-600"><i
@@ -62,13 +63,15 @@
                     </ul>
                 </div>
             </div>
-            <a href="/dierenartsen" class="text-[#f84525] font-medium text-sm hover:text-red-800">View</a>
+            <a href="{{ route(  'admin.couriers.index') }}"
+                class="text-[#f84525] font-medium text-sm hover:text-red-800">View</a>
         </div>
         <div class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
             <div class="flex justify-between mb-6">
                 <div>
-                    <div class="text-2xl font-semibold mb-1">100</div>
-                    <div class="text-sm font-medium text-gray-400">Blogs</div>
+                    <div class="text-2xl font-semibold mb-1"> {{ count($parcels) }}</td>
+                    </div>
+                    <div class="text-sm font-medium text-gray-400">Parcels</div>
                 </div>
                 <div class="dropdown">
                     <button type="button" class="dropdown-toggle text-gray-400 hover:text-gray-600"><i
@@ -90,7 +93,7 @@
                     </ul>
                 </div>
             </div>
-            <a href="" class="text-[#f84525] font-medium text-sm hover:text-red-800">View</a>
+            <a href="{{ route(  'admin.parcels.index') }}" class="text-[#f84525] font-medium text-sm hover:text-red-800">View</a>
         </div>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -99,7 +102,7 @@
             <div class="rounded-t mb-0 px-0 border-0">
                 <div class="flex flex-wrap items-center px-4 py-2">
                     <div class="relative w-full max-w-full flex-grow flex-1">
-                        <h3 class="font-semibold text-base text-gray-900 dark:text-gray-50">Users</h3>
+                        <h3 class="font-semibold text-base text-gray-900 dark:text-gray-50">hotels</h3>
                     </div>
                 </div>
                 <div class="block w-full overflow-x-auto">
@@ -166,7 +169,7 @@
                                     User</th>
                                 <td
                                     class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    5</td>
+                                    {{ count($hotels) }}</td>
                                 <td
                                     class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                     <div class="flex items-center">
@@ -187,7 +190,8 @@
                                     User</th>
                                 <td
                                     class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    4</td>
+                                    {{ count($hotels) }}</td>
+                                </td>
                                 <td
                                     class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                     <div class="flex items-center">
@@ -339,7 +343,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                 <div class="rounded-md border border-dashed border-gray-200 p-4">
                     <div class="flex items-center mb-0.5">
-                        <div class="text-xl font-semibold">10</div>
+                        <div class="text-xl font-semibold">
+                            {{ count($parcels->whereIn('status', ['pending', 'in_transit'])) }}</div>
                         <span
                             class="p-1 rounded text-[12px] font-semibold bg-blue-500/10 text-blue-500 leading-none ml-1">$80</span>
                     </div>
@@ -347,7 +352,7 @@
                 </div>
                 <div class="rounded-md border border-dashed border-gray-200 p-4">
                     <div class="flex items-center mb-0.5">
-                        <div class="text-xl font-semibold">50</div>
+                        <div class="text-xl font-semibold">{{ count($parcels->where('status', 'delivered')) }}</div>
                         <span
                             class="p-1 rounded text-[12px] font-semibold bg-emerald-500/10 text-emerald-500 leading-none ml-1">+$469</span>
                     </div>
@@ -355,7 +360,7 @@
                 </div>
                 <div class="rounded-md border border-dashed border-gray-200 p-4">
                     <div class="flex items-center mb-0.5">
-                        <div class="text-xl font-semibold">4</div>
+                        <div class="text-xl font-semibold">{{ count($parcels->where('status', 'canceled')) }}</div>
                         <span
                             class="p-1 rounded text-[12px] font-semibold bg-rose-500/10 text-rose-500 leading-none ml-1">-$130</span>
                     </div>

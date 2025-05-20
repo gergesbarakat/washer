@@ -16,7 +16,9 @@ class Branch extends Model
         'state',
         'zip_code',
         'country',
-        'contact'
+        'contact',
+        'status',
+
     ];
 
     public function couriers()

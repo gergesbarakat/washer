@@ -20,7 +20,14 @@ class HotelController extends Controller
         $branches = Branch::all();
         return view('admin.hotels.create', compact('branches'));
     }
+    public function show(User $hotel)
+    {
+        $parcels = $hotel->parcels()->with('parcelItems.product')->latest()->get();
 
+        return response()->json([
+            'html' => view('admin.hotels.partials-details', compact('hotel', 'parcels'))->render(),
+        ]);
+    }
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -75,7 +82,16 @@ class HotelController extends Controller
 
     public function destroy(User $hotel)
     {
-        $hotel->delete();
-        return redirect()->route('admin.hotels.index')->with('success', 'Hotel deleted successfully.');
+        $hotel->update(['status' => '0']);
+
+        return redirect()->route('admin.hotels.index')->with('status', 'hotel has been deactivated.');
+    }
+    public function activate($id)
+    {
+        $hotel = User::findOrFail($id);
+        $hotel->status = 1;
+        $hotel->save();
+
+        return redirect()->route('admin.hotels.index')->with('success', 'Hotel activated successfully.');
     }
 }

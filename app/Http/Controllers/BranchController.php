@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
@@ -53,6 +54,22 @@ class BranchController extends Controller
 
         $branch->update($validated);
 
-        return redirect()->route('admin.branches.index')->with('success', 'Branch updated successfully.');
+        return redirect()->route(route: 'admin.branches.index')->with('success', 'Branch updated successfully.');
+    }
+    public function destroy(Branch $branch)
+    {
+        // Delete the courier
+
+        $branch->update(['status' => '0']);
+
+        return redirect()->route('admin.branches.index')->with('success', 'branch has been deactivated instead of deleted.');
+    }
+    public function activate($id)
+    {
+        $hotel = Branch::findOrFail($id);
+        $hotel->status = 1;
+        $hotel->save();
+
+        return redirect()->route('admin.branches.index')->with('success', 'Hotel activated successfully.');
     }
 }

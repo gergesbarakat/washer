@@ -8,6 +8,10 @@ module.exports = {
     theme: {
         darkMode: 'class',
         extend: {},
+        fontFamily: {
+            sans: ['"Cairo"', 'sans-serif']
+        }
+
     },
     plugins: [],
 };

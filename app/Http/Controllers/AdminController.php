@@ -16,8 +16,8 @@ class AdminController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
+        return view('admin.profile.edit', [
+            'user' => $request->user('admin'),
         ]);
     }
 
@@ -26,15 +26,15 @@ class AdminController extends Controller
      */
     public function update(AdminUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $request->user('admin')->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($request->user('admin')->isDirty('email')) {
+            $request->user('admin')->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $request->user('admin')->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('admin.profile.edit')->with('status', 'profile-updated');
     }
 
     /**
@@ -46,7 +46,7 @@ class AdminController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
+        $user = $request->user('admin');
 
         Auth::guard('admin')->logout();
 
@@ -57,6 +57,4 @@ class AdminController extends Controller
 
         return Redirect::to('/');
     }
-
-
 }

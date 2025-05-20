@@ -1,5 +1,5 @@
 <x-AdminApp-layout>
-    <div class="container mx-auto p-6">
+    <div class="container mx-auto p-6 rounded  bg-white">
         <h1 class="text-2xl font-bold mb-4">Edit Courier</h1>
 
         <form action="{{ route('admin.couriers.update', $courier->id) }}" method="POST">

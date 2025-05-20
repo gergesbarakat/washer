@@ -1,8 +1,8 @@
 <x-AdminApp-layout>
-    <div class="p-8 max-w-6xl mx-auto">
+    <div class="p-8 max-w-6xl mx-auto bg-white rounded">
         <h2 class="text-3xl font-bold text-gray-800 mb-6">Create New Parcel</h2>
 
-        <form method="POST" action="{{ route('admin.parcels.store') }}" class="space-y-6">
+        <form method="POST" action="{{ route('admin.parcels.store') }}" class="space-y-6" id="parcel-form">
             @csrf
 
             {{-- Hotel / Branch / Courier / Status --}}
@@ -11,6 +11,8 @@
                     <label for="hotel_id" class="block text-sm font-medium text-gray-700 mb-1">Hotel</label>
                     <select name="hotel_id" id="hotel_id"
                         class="w-full px-4 py-2 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Select Hotel.........</option>
+
                         @foreach ($hotels as $hotel)
                             <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
                         @endforeach
@@ -47,6 +49,15 @@
                     </select>
                 </div>
             </div>
+            {{-- Product Dropdown (AJAX-loaded based on hotel) --}}
+            <div class="mt-4">
+                <label for="productSelect" class="block text-sm font-medium text-gray-700 mb-1">Select Product</label>
+                <select id="productSelect"
+                    class="w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Select Hotel first...</option>
+                </select>
+            </div>
+
 
             {{-- Product Search --}}
             <div>
@@ -59,13 +70,14 @@
             </div>
 
             {{-- Product Table --}}
-            <div class="overflow-x-auto border border-gray-200 rounded-lg shadow-sm">
+            <div class="overflow-x-auto p-4 border border-gray-200 rounded-lg shadow-sm">
                 <table id="productTable" class="min-w-full bg-white text-sm text-left text-gray-700">
                     <thead class="bg-gray-100 text-gray-800 uppercase text-xs font-semibold">
                         <tr>
                             <th class="px-6 py-3">Product</th>
                             <th class="px-6 py-3">Category</th>
                             <th class="px-6 py-3">Price</th>
+
                             <th class="px-6 py-3">Quantity</th>
                             <th class="px-6 py-3">Action</th>
                         </tr>
@@ -87,70 +99,84 @@
 
     {{-- Script --}}
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('productSearch');
-            const resultsList = document.getElementById('productResults');
-            const productTableBody = document.querySelector('#productTable tbody');
+        const searchInput = document.getElementById('productSearch');
+        const resultsList = document.getElementById('productResults');
+        const productTableBody = document.querySelector('#productTable tbody');
+        const userSelect = document.getElementById('hotel_id');
+        const hotelSelect = document.getElementById('hotel_id');
+        const productSelect = document.getElementById('productSelect');
 
-            searchInput.addEventListener('keyup', function() {
-                const query = this.value.trim();
-                if (query.length < 1) {
-                    resultsList.classList.add('hidden');
+        searchInput.addEventListener('keyup', function() {
+            const query = this.value.trim();
+            const userId = userSelect?.value;
+
+            if (!userId) {
+                resultsList.innerHTML =
+                    '<li class="px-4 py-2 text-sm text-red-500">Please select an Hotel first</li>';
+                resultsList.classList.remove('hidden');
+                return;
+            }
+
+            if (query.length < 1) {
+                resultsList.classList.add('hidden');
+                resultsList.innerHTML = '';
+                return;
+            }
+
+            fetch(
+                    `{{ url('/admin/products/search') }}?q=${encodeURIComponent(query)}&user_id=${encodeURIComponent(userId)}`
+                )
+                .then(res => res.json())
+                .then(products => {
                     resultsList.innerHTML = '';
-                    return;
-                }
+                    if (products.length === 0) {
+                        resultsList.innerHTML =
+                            '<li class="px-4 py-2 text-sm text-gray-500">No results found</li>';
+                    } else {
+                        products.forEach(product => {
+                            const li = document.createElement('li');
+                            li.className = 'px-4 py-2 hover:bg-blue-100 cursor-pointer';
+                            li.textContent =
+                                `${product.name} (${product.category.name}) - $${product.price}`;
+                            li.dataset.id = product.id;
+                            li.dataset.name = product.name;
+                            li.dataset.price = product.price;
 
-                fetch(`{{ url('/admin/products/search') }}?q=${encodeURIComponent(query)}`)
-                    .then(res => res.json())
-                    .then(products => {
-                        resultsList.innerHTML = '';
-                        if (products.length === 0) {
-                            resultsList.innerHTML =
-                                '<li class="px-4 py-2 text-sm text-gray-500">No results found</li>';
-                        } else {
-                            products.forEach(product => {
-                                const li = document.createElement('li');
-                                li.className = 'px-4 py-2 hover:bg-blue-100 cursor-pointer';
-                                li.textContent =
-                                    `${product.name} (${product.category.name}) - $${product.price}`;
-                                li.dataset.id = product.id;
-                                li.dataset.name = product.name;
-                                li.dataset.category = product.category.name;
-                                li.dataset.price = product.price;
-                                li.addEventListener('click', () => {
-                                    addProductRow(product);
-                                    resultsList.classList.add('hidden');
-                                    searchInput.value = '';
-                                });
-                                resultsList.appendChild(li);
+                            li.dataset.category = product.category.name;
+                            li.addEventListener('click', () => {
+                                addProductRow(product);
+                                resultsList.classList.add('hidden');
+                                searchInput.value = '';
                             });
-                        }
-                        resultsList.classList.remove('hidden');
-                    });
-            });
+                            resultsList.appendChild(li);
+                        });
+                    }
+                    resultsList.classList.remove('hidden');
+                });
+        });
 
-            function addProductRow(product) {
-                const existingRow = document.getElementById(`product-row-${product.id}`);
-                if (existingRow) {
-                    existingRow.remove(); // Remove if already exists
-                }
+        function addProductRow(product) {
+            const existingRow = document.getElementById(`product-row-${product.id}`);
+            if (existingRow) {
+                existingRow.remove(); // Remove if already exists
+            }
 
-                // Remove no-data row
-                const noDataRow = productTableBody.querySelector('.no-data');
-                if (noDataRow) noDataRow.remove();
+            const noDataRow = productTableBody.querySelector('.dt-empty');
+            if (noDataRow) noDataRow.remove();
 
-                const tr = document.createElement('tr');
-                tr.id = `product-row-${product.id}`;
-                tr.className = 'hover:bg-gray-50';
+            const tr = document.createElement('tr');
+            tr.id = `product-row-${product.id}`;
+            tr.className = 'hover:bg-gray-50';
 
-                tr.innerHTML = `
+            tr.innerHTML = `
                     <td class="px-6 py-3">
                         ${product.name}
                         <input type="hidden" name="products[${product.id}][id]" value="${product.id}">
                     </td>
                     <td class="px-6 py-3">${product.category.name}</td>
-                    <td class="px-6 py-3">$${product.price}</td>
-                    <td class="px-6 py-3">
+
+                    <td class="px-6 py-3">${product.price}
+                     </td><td class="px-6 py-3">
                         <input type="number" name="products[${product.id}][quantity]" value="1" min="1" class="w-20 border-gray-300 rounded">
                     </td>
                     <td class="px-6 py-3">
@@ -160,51 +186,109 @@
                     </td>
                 `;
 
-                productTableBody.appendChild(tr);
+            productTableBody.appendChild(tr);
+        }
+
+        window.checkNoDataRow = function() {
+            if (productTableBody.querySelectorAll('tr').length === 0) {
+                const noDataRow = document.createElement('tr');
+                noDataRow.className = 'no-data';
+                noDataRow.innerHTML =
+                    `<td colspan="5" class="text-center px-6 py-3 text-gray-500">No products added</td>`;
+                productTableBody.appendChild(noDataRow);
+            }
+        };
+
+        // document.getElementById('parcel-form').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+
+        //     const form = e.target;
+        //     const formData = new FormData(form);
+
+        //     fetch("{{ route('admin.parcels.store') }}", {
+        //             method: 'POST',
+        //             headers: {
+        //                 'X-CSRF-TOKEN': formData.get('_token'),
+        //                 'Accept': 'application/json',
+        //             },
+        //             body: formData
+        //         })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             const alert = document.getElementById('form-alert');
+        //             if (data.success) {
+        //                 alert.textContent = 'Parcel saved successfully.';
+        //                 alert.className = 'text-green-600';
+        //                 form.reset();
+        //                 // Optional: redirect or update UI
+        //             } else {
+        //                 alert.textContent = data.message || 'Failed to save parcel.';
+        //                 alert.className = 'text-red-600';
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.error('Error:', error);
+        //             document.getElementById('form-alert').textContent = 'Something went wrong.';
+        //             document.getElementById('form-alert').className = 'text-red-600';
+        //         });
+        // });
+        productSelect.addEventListener('change', function() {
+            const selected = this.options[this.selectedIndex];
+            if (!selected.value) return;
+
+            const product = {
+                id: selected.value,
+                name: selected.dataset.name,
+                category: {
+                    name: selected.dataset.category
+                },
+                price: selected.dataset.price
+            };
+
+            addProductRow(product);
+            this.value = ''; // reset
+        });
+        // Existing vars...
+
+        hotelSelect.addEventListener('change', () => {
+            const hotelId = hotelSelect.value;
+            $('tbody tr').remove()
+            const noDataRow = document.createElement('tr');
+            noDataRow.className = 'no-data';
+            noDataRow.innerHTML =
+                `<tr><td colspan="5" class="text-center dt-empty px-6 py-3 text-gray-500">No products added</td></tr>`;
+            productTableBody.appendChild(noDataRow);
+
+            productSelect.innerHTML = `<option value="">Loading...</option>`;
+
+            if (!hotelId) {
+                productSelect.innerHTML = `<option value="">Select a hotel first</option>`;
+                return;
             }
 
-            window.checkNoDataRow = function() {
-                if (productTableBody.querySelectorAll('tr').length === 0) {
-                    const noDataRow = document.createElement('tr');
-                    noDataRow.className = 'no-data';
-                    noDataRow.innerHTML =
-                        `No products added`;
-                    productTableBody.appendChild(noDataRow);
-                }
-            };
-        });
-        document.getElementById('parcel-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+            fetch(
+                    `{{ url('/admin/products/search') }}?q=&user_id=${encodeURIComponent(hotelId)}`
+                )
+                .then(res => res.json())
+                .then(products => {
+                    productSelect.innerHTML = `<option value="">Select a product...</option>`;
+                    products.forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product.id;
+                        option.textContent =
+                            `${product.name} (${product.category.name}) - $${product.price}`;
+                        option.dataset.name = product.name;
+                        option.dataset.category = product.category.name;
+                        option.dataset.price = product.price;
 
-            const form = e.target;
-            const formData = new FormData(form);
-
-            fetch("{{ route('admin.parcels.store') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': formData.get('_token'),
-                        'Accept': 'application/json',
-                    },
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const alert = document.getElementById('form-alert');
-                    if (data.success) {
-                        alert.textContent = 'Parcel saved successfully.';
-                        alert.className = 'text-green-600';
-                        form.reset();
-                        // Optional: redirect or update UI
-                    } else {
-                        alert.textContent = data.message || 'Failed to save parcel.';
-                        alert.className = 'text-red-600';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('form-alert').textContent = 'Something went wrong.';
-                    document.getElementById('form-alert').className = 'text-red-600';
+                        productSelect.appendChild(option);
+                    });
                 });
         });
+
+
+
+        // Existing addProductRow and checkNoDataRow functions remain unchanged
     </script>
+
 </x-AdminApp-layout>

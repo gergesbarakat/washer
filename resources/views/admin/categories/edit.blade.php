@@ -1,5 +1,5 @@
 <x-AdminApp-layout>
-    <div class="max-w-xl mx-auto py-10">
+    <div class="max-w-xl mx-auto py-10 rounded  bg-white">
         <h2 class="text-2xl font-bold mb-6">
             {{ isset($category) ? 'Edit Category' : 'Add Category' }}
         </h2>
@@ -16,8 +16,8 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Description</label>
-                <textarea name="description" class="w-full border-gray-300 rounded-md shadow-sm" rows="3">{{ old('description', $category->description ?? '') }}</textarea>
+                <label class="block text-sm   font-medium mb-1">Description</label>
+                <textarea name="description" class="w-full p-3 border-gray-300 rounded-md shadow-sm" rows="3">{{ old('description', $category->description ?? '') }}</textarea>
             </div>
 
             <div class="flex justify-end">

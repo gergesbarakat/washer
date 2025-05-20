@@ -1,22 +1,55 @@
 <x-AdminApp-layout>
-    <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">Add Branch</h1>
+    <div class="container mx-auto p-6 rounded bg-white max-w-4xl">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Add Branch</h1>
 
-        <form action="{{ route('admin.branches.store') }}" method="POST">
+        <form action="{{ route('admin.branches.store') }}" method="POST" class="space-y-6">
             @csrf
 
-            @foreach (['name', 'street', 'city', 'state', 'zip_code', 'country', 'contact'] as $field)
-                <div class="mb-4">
-                    <label class="block mb-1 capitalize">{{ str_replace('_', ' ', $field) }}</label>
-                    <input type="text" name="{{ $field }}" class="w-full border rounded p-2"
-                           value="{{ old($field) }}">
-                    @error($field)
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-            @endforeach
+            {{-- Branch Name --}}
+            <div>
+                <label class="block mb-1 font-medium text-gray-700">Branch Name</label>
+                <input type="text" name="name" value="{{ old('name') }}"
+                       class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                @error('name')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                @enderror
+            </div>
 
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Create Branch</button>
+            {{-- Address Fields --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @foreach (['street' => 'Street', 'city' => 'City', 'state' => 'State', 'zip_code' => 'ZIP Code'] as $field => $label)
+                    <div>
+                        <label class="block mb-1 font-medium text-gray-700">{{ $label }}</label>
+                        <input type="text" name="{{ $field }}" value="{{ old($field) }}"
+                               class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        @error($field)
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Country & Contact --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @foreach (['country' => 'Country', 'contact' => 'Contact Number'] as $field => $label)
+                    <div>
+                        <label class="block mb-1 font-medium text-gray-700">{{ $label }}</label>
+                        <input type="text" name="{{ $field }}" value="{{ old($field) }}"
+                               class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        @error($field)
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Submit Button --}}
+            <div class="text-right">
+                <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow">
+                    Create Branch
+                </button>
+            </div>
         </form>
     </div>
 </x-AdminApp-layout>

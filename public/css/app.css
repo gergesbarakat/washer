@@ -23,6 +23,13 @@
     }
 }
 
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal;
+    font-weight: normal;
+    src: url("{{ asset('fonts/Cairo-Regular.ttf') }}") format('truetype');
+}
+
 
 /*
 ! tailwindcss v3.3.3 | MIT License | https://tailwindcss.com
@@ -1060,10 +1067,6 @@ video {
 
 .align-middle {
     vertical-align: middle;
-}
-
-.font-inter {
-    font-family: 'Inter', sans-serif;
 }
 
 .text-2xl {

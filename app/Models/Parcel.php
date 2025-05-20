@@ -56,7 +56,10 @@ class Parcel extends Model
         return $this->belongsTo(Branch::class, 'branch_id');
     }
 
-
+    public function parcelItems()
+    {
+        return $this->hasMany(ParcelItem::class);
+    }
     public function toBranch()
     {
         return $this->belongsTo(Branch::class, 'to_branch_id');

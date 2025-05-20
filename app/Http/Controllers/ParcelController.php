@@ -37,7 +37,7 @@ class ParcelController extends Controller
             $hotelUser = Auth::guard('user')->user();
             $parcels = Parcel::with(['hotel', 'branch', 'courier', 'items.product'])
                 ->where('hotel_id', $hotelUser->id)->get();
-            return view('dashboard', compact('parcels', 'hotelUser'));
+            return view('parcels.index', compact('parcels', 'hotelUser'));
         } else {
             return redirect()->route('login'); // Unauthorized
         }
@@ -53,6 +53,7 @@ class ParcelController extends Controller
         $parcel = Parcel::with('items')->findOrFail($id);
 
         if (Auth::guard('user')->check()) {
+            return view('parcels.index', compact('parcels', 'hotelUser'));
         } elseif (Auth::guard('courier')->check()) {
             return view('courier.parcels.show', compact('parcels'));
         } elseif (Auth::guard('admin')->check()) {
@@ -64,18 +65,22 @@ class ParcelController extends Controller
 
     public function create()
     {
-        $hotels = User::all();
-        $branches = Branch::all();
-        $couriers = Courier::all();
+        $hotels = User::where('status', '1')->get();
+        $branches = Branch::where('status', '1')->get();
+        $couriers = Courier::where('status', '1')->get();
+
         if (Auth::guard('user')->check()) {
         } elseif (Auth::guard('courier')->check()) {
-            $products =  Product::all();
-            $courier = Courier::where('id', Auth::guard('courier')->user()->id)->get();
+
+
+            $products =  Product::where('status', '1')->get();
+            $courier = Courier::where('id', Auth::guard('courier')->user()->id)->get()->first();
             $branch = Branch::where('id', $courier->first()->branch_id)->get()->first();
             $parcels  =  Parcel::where('courier_id', Auth::guard('courier')->user()->id)->get();
-            $hotels = User::all();
+            $hotels = User::where('status', '1')->get();
             return view('courier.parcels.create', compact('parcels', 'hotels', 'branch', 'courier', 'products'));
         } elseif (Auth::guard('admin')->check()) {
+
             return view('admin.parcels.create', compact('hotels', 'branches', 'couriers'));
         } else {
         }
@@ -129,7 +134,7 @@ class ParcelController extends Controller
                     'length' => 0,
                     'width' => 0,
                     'price' => $productModel->price ?? 0,
-                 ]);
+                ]);
             }
 
 
@@ -140,14 +145,14 @@ class ParcelController extends Controller
 
 
                 $courier = Auth::guard('courier')->user();
-                $parcels = Parcel::with(relations: ['hotel', 'branch', 'courier', 'items.product'])
+                $parcels = Parcel::with(['hotel', 'branch', 'courier', 'items.product'])
                     ->where('courier_id', $courier->id)
                     ->latest()->get();
-                return view('courier.parcels.index', compact('parcels'));
+                return redirect()->route('courier.parcels.index', compact('parcels'));
             } elseif (Auth::guard('admin')->check()) {
-                $parcels = Parcel::with(relations: ['hotel', 'branch', 'courier', 'items.product'])->get();
+                $parcels = Parcel::with(['hotel', 'branch', 'courier', 'items.product'])->get();
 
-                return view('admin.parcels.index', compact('parcels'));
+                return redirect()->route('admin.parcels.index', compact('parcels'));
             } else {
             }
         } catch (\Exception $e) {
@@ -159,9 +164,9 @@ class ParcelController extends Controller
     public function edit($id)
     {
         $parcel = Parcel::with('items.product.category')->findOrFail($id);
-        $hotels = User::all();
-        $branches = Branch::all();
-        $couriers = Courier::all();
+        $hotels = User::where('status', '1')->get();
+        $branches = Branch::where('status', '1')->get();
+        $couriers = Courier::where('status', '1')->get();
 
         if (Auth::guard('user')->check()) {
         } elseif (Auth::guard('courier')->check()) {
@@ -242,10 +247,12 @@ class ParcelController extends Controller
         try {
             $parcel = Parcel::findOrFail($id);
             $parcel->items()->delete();
-            $parcel->delete();
-            return response()->json(['success' => true, 'message' => 'Parcel deleted successfully']);
+            $parcel->update([
+                'status' => 'canceled'
+            ]);
+            return redirect()->route('admin.parcels.index')->with(['success' => true, 'message' => 'Parcel Canceled  successfully']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return redirect()->route('admin.parcels.index')->with(['success' => true, 'message' => $e->getMessage()]);
         }
     }
 }

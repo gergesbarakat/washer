@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => CheckAuth::class,
             'multi-auth' => Multi_auth::class,
+            'PDF' => Niklasravnsborg\LaravelPdf\Facades\Pdf::class,
 
         ]);
     })

@@ -28,6 +28,8 @@ class User extends Authenticatable
         'state',
         'zip_code',
         'country',
+        'status',
+
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -57,6 +59,10 @@ class User extends Authenticatable
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+    public function parcels()
+    {
+        return $this->hasMany(Parcel::class, 'hotel_id');
     }
 
     public function sendPasswordResetNotification($token)
