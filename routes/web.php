@@ -140,7 +140,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     Route::resource('branches',  BranchController::class)->except(['show']);
 
     Route::resource('couriers', CourierController::class);
-    Route::post('/couriers/{courier}/activate', [HotelController::class, 'activate'])->name('couriers.activate');
+    Route::post('/couriers/{courier}/activate', [CourierController::class, 'activate'])->name('couriers.activate');
 
 
     Route::get('/admin/products/search', [ProductController::class, 'search'])->name('products.search');
@@ -166,7 +166,7 @@ Route::prefix('courier')->name('courier.')->middleware('auth:courier')->group(fu
 
 
 
-    Route::get('/products/search', [ProductController::class, 'show'])->name('products.search');
+    Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 });
 
 Route::post('/invoice/generate', [InvoiceController::class, 'generate'])->name('invoice.generate');

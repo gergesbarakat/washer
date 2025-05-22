@@ -9,13 +9,11 @@ class InvoiceController extends Controller
 {
     public function generate(Request $request)
     {
-        if ($request->type == 'invoice') {
-            
-        }
+         
         $data = [
             'name' => $request->input('name'),
             'adress' => $request->input('adress'),
-            'invoiceid' => $request->input('invoiceid'),
+            'invoiceid' => $request->input('parcelid') ? $request->input('parcelid') : $request->input('invoiceid'),
             'invoicedate' => $request->input('invoicedate'),
             'total' => $request->input('total'),
             'table_html' => $request->input('table_html'),

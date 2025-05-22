@@ -60,8 +60,8 @@
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 relative animate-fadeIn">
                 <button onclick="closeModal()"
                     class="absolute top-3 right-4 text-gray-500 hover:text-red-500 text-2xl font-bold">&times;</button>
-                <button id="generate-pdf" data-id="parcel" data-type="invoice"
-                    class="generate-pdf bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">إنشاء
+                <button id="generate-pdf" data-id="parcel" data-type="invoice" data=""
+                    class="generate-pdf invoice bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">إنشاء
                     ملف PDF</button>
                 <h2 class="text-2xl font-bold text-blue-700 mb-4 border-b pb-2">تفاصيل الطرد</h2>
 
@@ -133,6 +133,7 @@
             document.getElementById('modalBranch').textContent = parcel.branch?.name || 'N/A';
             document.getElementById('modalCourier').textContent = parcel.courier?.name || 'N/A';
             document.getElementById('modalStatus').textContent = parcel.status || 'N/A';
+            document.querySelector('.invoice').setAttribute('data',parcelId);
 
             const itemsContainer = document.getElementById('parcelItems');
             itemsContainer.innerHTML = '';

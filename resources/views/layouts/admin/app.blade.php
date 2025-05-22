@@ -10,6 +10,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -37,7 +39,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <title>Admin Panel</title>
+    <title>{{ env('APP_NAME', 'الشعار الابيض') }}</title>
 
     <style>
         /** Custom Select **/
@@ -197,8 +199,6 @@
         <!-- End Content -->
     </main>
 
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         // start: Sidebar
@@ -206,73 +206,114 @@
         $('select').addClass(
             ' w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 '
         );
+        
+        
+        
         @if (!request()->routeIs('dashboard'))
+                        
+                        
+                        const table = $('#invoice-table');
 
-            const table = $('#invoice-table');
+if (!table.length) {
+    console.warn("Table not found.");
+}
 
-            if (!table.length) {
-                console.warn("Table not found.");
+let dataTable;
+
+// Initialize DataTable *after* DOM is ready
+$(document).ready(function () {
+    dataTable = table.DataTable({
+        scrollX: true
+    });
+
+    const columnCount = dataTable.columns().header().length;
+
+    // Get index of "تاريخ الإنشاء"
+    function getDateColumnIndex() {
+        for (let i = 0; i < columnCount; i++) {
+            const header = $(dataTable.column(i).header()).text().trim();
+            if (header === "تاريخ الإنشاء") {
+                return i;
             }
+        }
+        return 0;
+    }
 
-            // Initialize DataTable
-            const dataTable = table.DataTable({
-                "scrollX": true,
-                // stateSave: false,
-                // dom: 'Bfrtip',
-                // buttons: [
-                //     'print', 'excel', 'pdf', 'csv', 'copy',
-                // ]
-            }); // DataTables instance
+    // Sort table by date column (desc)
+    dataTable.order([getDateColumnIndex(), 'desc']).draw();
 
-            // Get number of columns
-            const columnCount = dataTable.columns().header().length;
+    // Create filter container
+    const filterContainer = $('<div id="filters" class="flex flex-wrap gap-4 m-4"></div>');
+    $('#invoice-table_wrapper').before(filterContainer);
 
-            // Create filters before the table
-            const filterContainer = $('<div id="filters" class="flex flex-wrap gap-4 m-4"></div>');
-            $('#invoice-table_wrapper').before(filterContainer);
+    // Loop through each column except the last
+    for (let colIdx = 0; colIdx < columnCount - 1; colIdx++) {
+        const columnHeader = $(dataTable.column(colIdx).header()).text().trim();
+        const $wrapper = $('<div class="flex flex-col text-sm"></div>');
+        const $label = $(`<label class="mb-1 font-medium text-gray-700">${columnHeader}</label>`);
 
-            // Loop through each column except the last
-            for (let colIdx = 0; colIdx < columnCount - 1; colIdx++) {
-                // Get the column header name
-                const columnName = $(dataTable.column(colIdx).header()).text().trim();
+        if (columnHeader === "تاريخ الإنشاء") {
+            // 📅 Date input
+            const $input = $('<input type="date" class="border px-2 py-1 rounded text-sm" />');
 
-                // Create a wrapper for the label and select
-                const $wrapper = $('<div class="flex flex-col text-sm"></div>');
+            // Custom date filter
+            $.fn.dataTable.ext.search.push(function (settings, data) {
+                const inputDate = $input.val();
+                if (!inputDate) return true;
 
-                // Create label
-                const $label = $(`<label class="mb-1 font-medium text-gray-700">${columnName}</label>`);
+                const cellDate = data[colIdx]; // get raw cell text
+                if (!cellDate) return false;
 
-                // Create select
-                const $select = $(`<select class="border px-2 py-1 rounded text-sm">
-                                        <option value="">All</option>
-                                    </select>`);
+                try {
+                    const inputISO = new Date(inputDate).toISOString().split('T')[0];
+                    const cellISO = new Date(cellDate).toISOString().split('T')[0];
+                    return inputISO === cellISO;
+                } catch (e) {
+                    return false;
+                }
+            });
 
-                // Get unique values from the column
-                const cellValues = new Set();
-                $('#invoice-table tbody tr').each(function() {
-                    const cell = $(this).find('td').eq(colIdx);
-                    const text = cell.text().trim();
-                    if (text) {
-                        cellValues.add(text);
-                    }
-                });
+            $input.on('change', function () {
+                dataTable.draw();
+            });
 
-                // Sort and append options
-                Array.from(cellValues).sort().forEach(value => {
-                    $select.append(`<option value="${value}">${value}</option>`);
-                });
+            $wrapper.append($label).append($input);
+        } else {
+            // 🔽 Default select dropdown
+            const $select = $(`<select class="border px-2 py-1 rounded text-sm">
+                <option value="">All</option>
+            </select>`);
 
-                // Append label and select to wrapper, then wrapper to filter container
-                $wrapper.append($label).append($select);
-                filterContainer.append($wrapper);
+            const cellValues = new Set();
+            dataTable.column(colIdx).data().each(function (value) {
+                const text = $('<div>').html(value).text().trim(); // decode HTML
+                if (text) cellValues.add(text);
+            });
 
-                // Filter on change
-                $select.on('change', function() {
-                    const val = $.fn.dataTable.util.escapeRegex($(this).val());
-                    dataTable.column(colIdx).search(val ? '^' + val + '$' : '', true, false).draw();
-                });
-            }
-        @endif
+            Array.from(cellValues).sort().forEach(value => {
+                $select.append(`<option value="${value}">${value}</option>`);
+            });
+
+            $select.on('change', function () {
+                const val = $.fn.dataTable.util.escapeRegex($(this).val());
+                dataTable.column(colIdx).search(val ? '^' + val + '$' : '', true, false).draw();
+            });
+
+            $wrapper.append($label).append($select);
+        }
+
+        filterContainer.append($wrapper);
+    }
+});
+
+        
+       @endif
+       
+       
+       
+       
+       
+       
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll('input[type="password"]').forEach(function(input) {
                 // Create eye icon wrapper
@@ -449,81 +490,6 @@
             })
         })
         // end: Tab
-
-
-
-        // start: Chart
-        @if (Route::current()->getName() == 'dashboard')
-            new Chart(document.getElementById('order-chart'), {
-                type: 'line',
-                data: {
-                    labels: generateNDays(7),
-                    datasets: [{
-                            label: 'Active',
-                            data: generateRandomData(7),
-                            borderWidth: 1,
-                            fill: true,
-                            pointBackgroundColor: 'rgb(59, 130, 246)',
-                            borderColor: 'rgb(59, 130, 246)',
-                            backgroundColor: 'rgb(59 130 246 / .05)',
-                            tension: .2
-                        },
-                        {
-                            label: 'Completed',
-                            data: generateRandomData(7),
-                            borderWidth: 1,
-                            fill: true,
-                            pointBackgroundColor: 'rgb(16, 185, 129)',
-                            borderColor: 'rgb(16, 185, 129)',
-                            backgroundColor: 'rgb(16 185 129 / .05)',
-                            tension: .2
-                        },
-                        {
-                            label: 'Canceled',
-                            data: generateRandomData(7),
-                            borderWidth: 1,
-                            fill: true,
-                            pointBackgroundColor: 'rgb(244, 63, 94)',
-                            borderColor: 'rgb(244, 63, 94)',
-                            backgroundColor: 'rgb(244 63 94 / .05)',
-                            tension: .2
-                        },
-                    ]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            function generateNDays(n) {
-                const data = []
-                for (let i = 0; i < n; i++) {
-                    const date = new Date()
-                    date.setDate(date.getDate() - i)
-                    data.push(date.toLocaleString('en-US', {
-                        month: 'short',
-                        day: 'numeric'
-                    }))
-                }
-                return data
-            }
-
-            function generateRandomData(n) {
-                const data = []
-                for (let i = 0; i < n; i++) {
-                    data.push(Math.round(Math.random() * 10))
-                }
-                return data
-            }
-        @endif
-
-
-
-        // end: Chart
     </script>
     <script>
         function exportToExcel() {
@@ -610,6 +576,7 @@
             e.addEventListener('click', function() {
                 const elementId = this.getAttribute('data-id');
                 const type = this.getAttribute('data-type');
+                const parcelid = this.getAttribute('data');
 
                 const element = document.querySelector(`#${elementId}`);
                 if (!element) return alert("Element not found");
@@ -660,6 +627,10 @@
                 formData.append('total', '150.00');
                 formData.append('col_width', colWidth);
                 formData.append('type', type);
+                if (parcelid != null) {
+                    formData.append('parcelid', 'PARCEL_#' + parcelid);
+
+                }
 
                 fetch('{{ url('/invoice/generate') }}', {
                         method: 'POST',

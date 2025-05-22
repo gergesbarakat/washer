@@ -2,34 +2,34 @@
     <div class="p-6 max-w-6xl mx-auto bg-white rounded">
         <div class="flex w-full justify-between items-center mb-6 ">
 
-            <h1 class="text-2xl font-bold mb-4">Parcels</h1>
+            <h1 class="text-2xl font-bold mb-4">الطرود</h1>
 
             <a href="{{ route('admin.parcels.create') }}"
                 class="mb-4 inline-block bg-blue-600 text-white px-4 py-2 rounded">
-                + New Parcel
+                + طرد جديد
             </a>
 
         </div>
         <button id="generate-pdf" data-id="invoice-table" data-type="table"
-            class="generate-pdf bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Generate
-            PDF</button>
+            class="generate-pdf bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">توليد
+            ملف PDF</button>
         <button onclick="exportToExcel()"
-            class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">Export
-            to Excel</button>
+            class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">تصدير
+            إلى Excel</button>
 
         <table class="min-w-full table-auto  " id="invoice-table">
             <thead class="bg-blue-100">
 
                 <tr>
-                    <th class="px-4 py-2">ID</th>
-                    <th class="px-4 py-2" id="Hotel">Hotel</th>
-                    <th class="px-4 py-2" id="Branch">Branch</th>
-                    <th class="px-4 py-2">Courier</th>
+                    <th class="px-4 py-2">المعرف</th>
+                    <th class="px-4 py-2" id="Hotel">الفندق</th>
+                    <th class="px-4 py-2" id="Branch">الفرع</th>
+                    <th class="px-4 py-2">الموصل</th>
 
-                    <th class="px-4 py-2">Status</th>
+                    <th class="px-4 py-2">الحالة</th>
 
-                    <th class="px-4 py-2">Created</th>
-                    <th class="px-4 py-2">Actions</th>
+                    <th class="px-4 py-2">تاريخ الإنشاء</th>
+                    <th class="px-4 py-2">الإجراءات</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,22 +48,22 @@
                         <td class="px-4 py-2 flex space-x-2">
                             <button onclick="viewParcel({{ $parcel->id }})"
                                 class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">👁
-                                View</button>
+                                عرض</button>
                             <a href="{{ route('admin.parcels.edit', $parcel->id) }}"
-                                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Edit</a>
+                                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">تعديل</a>
                             <form class="inline-block" method="POST"
                                 action="{{ route('admin.parcels.destroy', $parcel->id) }}"
-                                onsubmit="return confirm('Delete this parcel?')">
+                                onsubmit="return confirm('هل أنت متأكد من حذف هذا الطرد؟')">
                                 @csrf @method('DELETE')
                                 <button
-                                    class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded  "
-                                    type="submit">Cancel</button>
+                                    class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
+                                    type="submit">إلغاء</button>
                             </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center px-4 py-6 text-gray-500">No parcels found.</td>
+                        <td colspan="7" class="text-center px-4 py-6 text-gray-500">لا توجد طرود.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -78,40 +78,38 @@
                 <button onclick="closeModal()"
                     class="absolute top-3 right-4 text-gray-500 hover:text-red-500 text-2xl font-bold">&times;</button>
                 <button id="generate-pdf" data-id="parcel" data-type="invoice"
-                    class="generate-pdf bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Generate
-                    PDF</button>
-                <h2 class="text-2xl font-bold text-blue-700 mb-4 border-b pb-2">Parcel Details</h2>
+                    class="generate-pdf bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">توليد
+                    ملف PDF</button>
+                <h2 class="text-2xl font-bold text-blue-700 mb-4 border-b pb-2">تفاصيل الطرد</h2>
 
                 <div id="parcel">
 
-
-
                     <div class="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-700">
                         <div>
-                            <p class="font-semibold text-gray-900">Hotel:</p>
+                            <p class="font-semibold text-gray-900">الفندق:</p>
                             <p id="modalHotel" class="mt-1 text-gray-600">—</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-gray-900">Branch:</p>
+                            <p class="font-semibold text-gray-900">الفرع:</p>
                             <p id="modalBranch" class="mt-1 text-gray-600">—</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-gray-900">Courier:</p>
+                            <p class="font-semibold text-gray-900">الموصل:</p>
                             <p id="modalCourier" class="mt-1 text-gray-600">—</p>
                         </div>
                         <div>
-                            <p class="font-semibold text-gray-900">Status:</p>
+                            <p class="font-semibold text-gray-900">الحالة:</p>
                             <p id="modalStatus" class="mt-1 text-gray-600">—</p>
                         </div>
                     </div>
 
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Parcel Items</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">عناصر الطرد</h3>
                     <div id="parcelItems" class="space-y-2 max-h-60 overflow-y-auto pr-2">
-                        <!-- Items will be dynamically added here -->
+                        <!-- العناصر سيتم إضافتها ديناميكياً -->
                     </div>
 
                     <div class="text-right mt-4 border-t pt-3">
-                        <p class="text-base font-semibold text-gray-700">Total Price: <span id="totalPrice"
+                        <p class="text-base font-semibold text-gray-700">السعر الإجمالي: <span id="totalPrice"
                                 class="text-blue-600">—</span></p>
                     </div>
 
@@ -119,7 +117,7 @@
                 <div class="text-right mt-6">
                     <button onclick="closeModal()"
                         class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded">
-                        Close
+                        إغلاق
                     </button>
                 </div>
             </div>
@@ -130,29 +128,29 @@
     <script>
         $.fn.dataTable.ext.search.push(
             function(settings, searchData, index, rowData, counter) {
-                var position = $("#Hotel	 option:selected").text();
-                var office = $("#Branch	 option:selected").text();
+                var position = $("#Hotel option:selected").text();
+                var office = $("#Branch option:selected").text();
 
-                // Display the row if both inputs are empty
+                // عرض الصف إذا كانت كلا الخانتين فارغة
                 if (position.length === 0 && office.length === 0) {
                     return true;
                 }
 
-                // Display row if position matches position selection
+                // عرض الصف إذا تطابق الموقع مع الاختيار
                 hasPosition = true;
 
                 if (position !== searchData[1]) {
-                    hasPosition = false; //Doesn't match - don't display
+                    hasPosition = false; // لا يطابق - لا تعرض
                 }
 
-                // Display the row if office matches the office selection
+                // عرض الصف إذا تطابق المكتب مع الاختيار
                 hasOffice = true;
 
                 if (office !== searchData[2]) {
-                    hasOffice = false; //Doesn't match - don't display
+                    hasOffice = false; // لا يطابق - لا تعرض
                 }
 
-                // If either position or office matched then display the row
+                // إذا تطابق الموقع أو المكتب عرض الصف
                 return true ? hasPosition || hasOffice : false;
             });
         const parcels = @json($parcels);
@@ -161,10 +159,10 @@
             const parcel = parcels.find(p => p.id === parcelId);
             if (!parcel) return;
 
-            document.getElementById('modalHotel').textContent = parcel.hotel?.name || 'N/A';
-            document.getElementById('modalBranch').textContent = parcel.branch?.name || 'N/A';
-            document.getElementById('modalCourier').textContent = parcel.courier?.name || 'N/A';
-            document.getElementById('modalStatus').textContent = parcel.status || 'N/A';
+            document.getElementById('modalHotel').textContent = parcel.hotel?.name || 'غير متوفر';
+            document.getElementById('modalBranch').textContent = parcel.branch?.name || 'غير متوفر';
+            document.getElementById('modalCourier').textContent = parcel.courier?.name || 'غير متوفر';
+            document.getElementById('modalStatus').textContent = parcel.status || 'غير متوفر';
 
             const itemsContainer = document.getElementById('parcelItems');
             itemsContainer.innerHTML = '';
@@ -183,19 +181,21 @@
                     div.innerHTML = `
                 <div class="flex justify-between items-center">
                     <div>
-                        <strong>${item.product?.name || 'Unnamed product'}</strong>
-                        <p class="text-sm text-gray-600">Quantity: ${quantity}, Unit Price: ${price }</p>
+                        <strong>${item.product?.name || 'منتج غير مسمى'}</strong>
+                        <p class="text-sm text-gray-600">الكمية: ${quantity}, سعر الوحدة: ${price}
+                        ريال سعودي </p>
                     </div>
-                    <div class="font-semibold text-gray-800">Subtotal: ${subtotal }</div>
+                    <div class="font-semibold text-gray-800">المجموع: ${subtotal}
+                     ريال سعودي </div>
                 </div>
             `;
                     itemsContainer.appendChild(div);
                 });
             } else {
-                itemsContainer.innerHTML = '<p class="text-gray-500">No items found for this parcel.</p>';
+                itemsContainer.innerHTML = '<p class="text-gray-500">لا توجد عناصر لهذا الطرد.</p>';
             }
 
-            document.getElementById('totalPrice').textContent = total + ' EGP';
+            document.getElementById('totalPrice').textContent = total + 'ريال سعودي';
 
             document.getElementById('parcelModal').classList.remove('hidden');
         }

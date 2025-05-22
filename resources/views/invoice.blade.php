@@ -65,6 +65,8 @@
         .invoice-details {
             margin-bottom: 20px;
             font-size: medium;
+            width: 800px;
+
         }
 
         table {}
@@ -116,7 +118,7 @@
 
         <div style="display:flex;flex-direction:column;">
             <h1 class="invoice-title">{{ $type }}</h1>
-            <p>Washer<br>Address<br>City, State, Zip</p>
+            <p> Address<br>City, State, Zip</p>
             Invoice Number: {{ $invoiceid }}<br>
             Date: {{ date('Y-M-d H:i:s') }}<br>
         </div>

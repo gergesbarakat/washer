@@ -1,17 +1,17 @@
 <x-AdminApp-layout>
     <div class="p-8 max-w-6xl mx-auto bg-white rounded">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Create New Parcel</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">إنشاء طرد جديد</h2>
 
         <form method="POST" action="{{ route('admin.parcels.store') }}" class="space-y-6" id="parcel-form">
             @csrf
 
-            {{-- Hotel / Branch / Courier / Status --}}
+            {{-- الفندق / الفرع / المرسل / الحالة --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                    <label for="hotel_id" class="block text-sm font-medium text-gray-700 mb-1">Hotel</label>
+                    <label for="hotel_id" class="block text-sm font-medium text-gray-700 mb-1">الفندق</label>
                     <select name="hotel_id" id="hotel_id"
                         class="w-full px-4 py-2 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Select Hotel.........</option>
+                        <option value="">اختر الفندق.........</option>
 
                         @foreach ($hotels as $hotel)
                             <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
@@ -20,7 +20,7 @@
                 </div>
 
                 <div>
-                    <label for="branch_id" class="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+                    <label for="branch_id" class="block text-sm font-medium text-gray-700 mb-1">الفرع</label>
                     <select name="branch_id" id="branch_id"
                         class="w-full px-4 py-2 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         @foreach ($branches as $branch)
@@ -30,7 +30,7 @@
                 </div>
 
                 <div>
-                    <label for="courier_id" class="block text-sm font-medium text-gray-700 mb-1">Courier</label>
+                    <label for="courier_id" class="block text-sm font-medium text-gray-700 mb-1">المرسل</label>
                     <select name="courier_id" id="courier_id"
                         class="w-full px-4 py-2 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         @foreach ($couriers as $courier)
@@ -40,46 +40,45 @@
                 </div>
 
                 <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">الحالة</label>
                     <select name="status" id="status"
                         class="w-full px-4 py-2 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="pending">Pending</option>
-                        <option value="in_transit">In Transit</option>
-                        <option value="delivered">Delivered</option>
+                        <option value="pending">قيد الانتظار</option>
+                        <option value="in_transit">قيد النقل</option>
+                        <option value="delivered">تم التوصيل</option>
                     </select>
                 </div>
             </div>
-            {{-- Product Dropdown (AJAX-loaded based on hotel) --}}
+            {{-- قائمة المنتجات (يتم تحميلها بواسطة AJAX بناءً على الفندق) --}}
             <div class="mt-4">
-                <label for="productSelect" class="block text-sm font-medium text-gray-700 mb-1">Select Product</label>
+                <label for="productSelect" class="block text-sm font-medium text-gray-700 mb-1">اختر المنتج</label>
                 <select id="productSelect"
                     class="w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Select Hotel first...</option>
+                    <option value="">اختر الفندق أولاً...</option>
                 </select>
             </div>
 
-
-            {{-- Product Search --}}
+            {{-- بحث المنتجات --}}
             <div>
-                <label for="productSearch" class="block text-sm font-medium text-gray-700 mb-1">Search Products</label>
-                <input type="text" id="productSearch" placeholder="Type to search products..."
+                <label for="productSearch" class="block text-sm font-medium text-gray-700 mb-1">ابحث عن المنتجات</label>
+                <input type="text" id="productSearch" placeholder="اكتب للبحث عن المنتجات..."
                     class="w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <ul id="productResults"
                     class="hidden border border-gray-300 bg-white rounded-lg mt-1 shadow max-h-60 overflow-y-auto z-10 relative">
                 </ul>
             </div>
 
-            {{-- Product Table --}}
+            {{-- جدول المنتجات --}}
             <div class="overflow-x-auto p-4 border border-gray-200 rounded-lg shadow-sm">
                 <table id="productTable" class="min-w-full bg-white text-sm text-left text-gray-700">
                     <thead class="bg-gray-100 text-gray-800 uppercase text-xs font-semibold">
                         <tr>
-                            <th class="px-6 py-3">Product</th>
-                            <th class="px-6 py-3">Category</th>
-                            <th class="px-6 py-3">Price</th>
+                            <th class="px-6 py-3">المنتج</th>
+                            <th class="px-6 py-3">الفئة</th>
+                            <th class="px-6 py-3">السعر</th>
 
-                            <th class="px-6 py-3">Quantity</th>
-                            <th class="px-6 py-3">Action</th>
+                            <th class="px-6 py-3">الكمية</th>
+                            <th class="px-6 py-3">الإجراء</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,17 +86,17 @@
                 </table>
             </div>
 
-            {{-- Submit --}}
+            {{-- زر الحفظ --}}
             <div class="text-right">
                 <button type="submit"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-sm transition duration-150">
-                    Save Parcel
+                    حفظ الطرد
                 </button>
             </div>
         </form>
     </div>
 
-    {{-- Script --}}
+    {{-- السكربت --}}
     <script>
         const searchInput = document.getElementById('productSearch');
         const resultsList = document.getElementById('productResults');
@@ -112,7 +111,7 @@
 
             if (!userId) {
                 resultsList.innerHTML =
-                    '<li class="px-4 py-2 text-sm text-red-500">Please select an Hotel first</li>';
+                    '<li class="px-4 py-2 text-sm text-red-500">يرجى اختيار الفندق أولاً</li>';
                 resultsList.classList.remove('hidden');
                 return;
             }
@@ -131,7 +130,7 @@
                     resultsList.innerHTML = '';
                     if (products.length === 0) {
                         resultsList.innerHTML =
-                            '<li class="px-4 py-2 text-sm text-gray-500">No results found</li>';
+                            '<li class="px-4 py-2 text-sm text-gray-500">لا توجد نتائج</li>';
                     } else {
                         products.forEach(product => {
                             const li = document.createElement('li');
@@ -158,7 +157,7 @@
         function addProductRow(product) {
             const existingRow = document.getElementById(`product-row-${product.id}`);
             if (existingRow) {
-                existingRow.remove(); // Remove if already exists
+                existingRow.remove(); // إزالة الصف إذا كان موجودًا مسبقًا
             }
 
             const noDataRow = productTableBody.querySelector('.dt-empty');
@@ -176,12 +175,12 @@
                     <td class="px-6 py-3">${product.category.name}</td>
 
                     <td class="px-6 py-3">${product.price}
-                     </td><td class="px-6 py-3">
+                    ريال سعودي </td><td class="px-6 py-3">
                         <input type="number" name="products[${product.id}][quantity]" value="1" min="1" class="w-20 border-gray-300 rounded">
                     </td>
                     <td class="px-6 py-3">
                         <button type="button" class="text-red-500 hover:underline" onclick="this.closest('tr').remove(); checkNoDataRow();">
-                            Remove
+                            إزالة
                         </button>
                     </td>
                 `;
@@ -194,44 +193,11 @@
                 const noDataRow = document.createElement('tr');
                 noDataRow.className = 'no-data';
                 noDataRow.innerHTML =
-                    `<td colspan="5" class="text-center px-6 py-3 text-gray-500">No products added</td>`;
+                    `<td colspan="5" class="text-center px-6 py-3 text-gray-500">لا توجد منتجات مضافة</td>`;
                 productTableBody.appendChild(noDataRow);
             }
         };
 
-        // document.getElementById('parcel-form').addEventListener('submit', function(e) {
-        //     e.preventDefault();
-
-        //     const form = e.target;
-        //     const formData = new FormData(form);
-
-        //     fetch("{{ route('admin.parcels.store') }}", {
-        //             method: 'POST',
-        //             headers: {
-        //                 'X-CSRF-TOKEN': formData.get('_token'),
-        //                 'Accept': 'application/json',
-        //             },
-        //             body: formData
-        //         })
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             const alert = document.getElementById('form-alert');
-        //             if (data.success) {
-        //                 alert.textContent = 'Parcel saved successfully.';
-        //                 alert.className = 'text-green-600';
-        //                 form.reset();
-        //                 // Optional: redirect or update UI
-        //             } else {
-        //                 alert.textContent = data.message || 'Failed to save parcel.';
-        //                 alert.className = 'text-red-600';
-        //             }
-        //         })
-        //         .catch(error => {
-        //             console.error('Error:', error);
-        //             document.getElementById('form-alert').textContent = 'Something went wrong.';
-        //             document.getElementById('form-alert').className = 'text-red-600';
-        //         });
-        // });
         productSelect.addEventListener('change', function() {
             const selected = this.options[this.selectedIndex];
             if (!selected.value) return;
@@ -246,9 +212,8 @@
             };
 
             addProductRow(product);
-            this.value = ''; // reset
+            this.value = ''; // إعادة تعيين الاختيار
         });
-        // Existing vars...
 
         hotelSelect.addEventListener('change', () => {
             const hotelId = hotelSelect.value;
@@ -256,13 +221,13 @@
             const noDataRow = document.createElement('tr');
             noDataRow.className = 'no-data';
             noDataRow.innerHTML =
-                `<tr><td colspan="5" class="text-center dt-empty px-6 py-3 text-gray-500">No products added</td></tr>`;
+                `<tr><td colspan="5" class="text-center dt-empty px-6 py-3 text-gray-500">لا توجد منتجات مضافة</td></tr>`;
             productTableBody.appendChild(noDataRow);
 
-            productSelect.innerHTML = `<option value="">Loading...</option>`;
+            productSelect.innerHTML = `<option value="">جارٍ التحميل...</option>`;
 
             if (!hotelId) {
-                productSelect.innerHTML = `<option value="">Select a hotel first</option>`;
+                productSelect.innerHTML = `<option value="">اختر فندقًا أولاً</option>`;
                 return;
             }
 
@@ -271,12 +236,12 @@
                 )
                 .then(res => res.json())
                 .then(products => {
-                    productSelect.innerHTML = `<option value="">Select a product...</option>`;
+                    productSelect.innerHTML = `<option value="">اختر منتجًا...</option>`;
                     products.forEach(product => {
                         const option = document.createElement('option');
                         option.value = product.id;
                         option.textContent =
-                            `${product.name} (${product.category.name}) - $${product.price}`;
+                            `${product.name} (${product.category.name}) - ريال سعودي${product.price}`;
                         option.dataset.name = product.name;
                         option.dataset.category = product.category.name;
                         option.dataset.price = product.price;
@@ -285,10 +250,5 @@
                     });
                 });
         });
-
-
-
-        // Existing addProductRow and checkNoDataRow functions remain unchanged
     </script>
-
 </x-AdminApp-layout>

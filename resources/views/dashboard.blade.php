@@ -1,387 +1,14 @@
 <x-App-layout>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-        <!-- بطاقة الفنادق -->
         <div class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
             <div class="flex justify-between mb-6">
                 <div>
-                    <div class="flex items-center mb-1">
-                        <div class="text-2xl font-semibold">2</div>
+                    <div class="text-2xl font-semibold mb-1">
+                        <div class="text-2xl font-semibold">{{ count($parcels->where('status', 'delivered')) }}</div>
                     </div>
-                    <div class="text-sm font-medium text-gray-400">الفنادق</div>
+                    <div class="text-sm font-medium text-gray-400">المكتملة</div>
                 </div>
-                <div class="dropdown relative">
-                    <button type="button" class="dropdown-toggle text-gray-400 hover:text-gray-600"><i
-                            class="ri-more-fill"></i></button>
-                    <ul
-                        class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px] absolute right-0 mt-2">
-                        <li><a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">الملف
-                                الشخصي</a>
-                        </li>
-                        <li><a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">الإعدادات</a>
-                        </li>
-                        <li><a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">تسجيل
-                                الخروج</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <a href="/gebruikers" class="text-[#f84525] font-medium text-sm hover:text-red-800">عرض</a>
-        </div>
-
-        <!-- بطاقة المندوبين -->
-        <div class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
-            <div class="flex justify-between mb-4">
-                <div>
-                    <div class="flex items-center mb-1">
-                        <div class="text-2xl font-semibold">a</div>
-                        <div
-                            class="p-1 rounded bg-emerald-500/10 text-emerald-500 text-[12px] font-semibold leading-none ml-2">
-                            +30%</div>
-                    </div>
-                    <div class="text-sm font-medium text-gray-400">المندوبين</div>
-                </div>
-                <div class="dropdown relative">
-                    <button type="button" class="dropdown-toggle text-gray-400 hover:text-gray-600"><i
-                            class="ri-more-fill"></i></button>
-                    <ul
-                        class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px] absolute right-0 mt-2">
-                        <li><a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">الملف
-                                الشخصي</a>
-                        </li>
-                        <li><a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">الإعدادات</a>
-                        </li>
-                        <li><a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">تسجيل
-                                الخروج</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <a href="a" class="text-[#f84525] font-medium text-sm hover:text-red-800">عرض</a>
-        </div>
-
-        <!-- بطاقة الطرود -->
-        <div class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
-            <div class="flex justify-between mb-6">
-                <div>
-                    <div class="text-2xl font-semibold mb-1">{{ count($parcels) }}</div>
-                    <div class="text-sm font-medium text-gray-400">الطرود</div>
-                </div>
-                <div class="dropdown relative">
-                    <button type="button" class="dropdown-toggle text-gray-400 hover:text-gray-600"><i
-                            class="ri-more-fill"></i></button>
-                    <ul
-                        class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px] absolute right-0 mt-2">
-                        <li><a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">الملف
-                                الشخصي</a>
-                        </li>
-                        <li><a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">الإعدادات</a>
-                        </li>
-                        <li><a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">تسجيل
-                                الخروج</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <a href="{{ route('user.parcels.index') }}"
-                class="text-[#f84525] font-medium text-sm hover:text-red-800">عرض</a>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <!-- جدول الفنادق -->
-        <div
-            class="p-6 relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded">
-            <div class="rounded-t mb-0 px-0 border-0">
-                <div class="flex flex-wrap items-center px-4 py-2">
-                    <div class="relative w-full max-w-full flex-grow flex-1">
-                        <h3 class="font-semibold text-base text-gray-900 dark:text-gray-50">الفنادق</h3>
-                    </div>
-                </div>
-                <div class="block w-full overflow-x-auto">
-                    <table class="items-center w-full bg-transparent border-collapse">
-                        <thead>
-                            <tr>
-                                <th
-                                    class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                    الدور
-                                </th>
-                                <th
-                                    class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                    العدد
-                                </th>
-                                <th
-                                    class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left min-w-140-px">
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="text-gray-700 dark:text-gray-100">
-                                <th
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                    المسؤول
-                                </th>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    1
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    <div class="flex items-center">
-                                        <span class="mr-2">70%</span>
-                                        <div class="relative w-full">
-                                            <div class="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                                                <div style="width: 70%"
-                                                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="text-gray-700 dark:text-gray-100">
-                                <th
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                    مستخدم
-                                </th>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    6
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    <div class="flex items-center">
-                                        <span class="mr-2">40%</span>
-                                        <div class="relative w-full">
-                                            <div class="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                                                <div style="width: 40%"
-                                                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="text-gray-700 dark:text-gray-100">
-                                <th
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                    ضيف
-                                </th>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    12
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    <div class="flex items-center">
-                                        <span class="mr-2">60%</span>
-                                        <div class="relative w-full">
-                                            <div class="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                                                <div style="width: 60%"
-                                                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-400">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="text-gray-700 dark:text-gray-100">
-                                <th
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                                    محرر
-                                </th>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    a
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    <div class="flex items-center">
-                                        <span class="mr-2">10%</span>
-                                        <div class="relative w-full">
-                                            <div class="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                                                <div style="width: 10%"
-                                                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-700">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- جدول الأنشطة -->
-        <div
-            class="p-6 relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded">
-            <div class="rounded-t mb-0 px-0 border-0">
-                <div class="flex flex-wrap items-center px-4 py-2">
-                    <div class="relative w-full max-w-full flex-grow flex-1">
-                        <h3 class="font-semibold text-base text-gray-900 dark:text-gray-50">الأنشطة</h3>
-                    </div>
-                </div>
-                <div class="block w-full overflow-x-auto">
-                    <table class="items-center w-full bg-transparent border-collapse">
-                        <thead>
-                            <tr>
-                                <th
-                                    class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                    المستخدم
-                                </th>
-                                <th
-                                    class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                    الدور
-                                </th>
-                                <th
-                                    class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                    النشاط
-                                </th>
-                                <th
-                                    class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                    الوقت
-                                </th>
-                                <th
-                                    class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 align-middle border border-solid border-gray-200 dark:border-gray-500 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left min-w-140-px">
-                                    الإجراءات
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="text-gray-700 dark:text-gray-100">
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    جين كوبر
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    المسؤول
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    أنشأ مستخدم جديد
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    2023-08-28 12:54
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    <div class="dropdown relative">
-                                        <button
-                                            class="dropdown-toggle block w-full bg-white hover:bg-gray-100 text-gray-600 border border-gray-200 rounded-md px-3 py-1 text-left text-sm"
-                                            type="button" id="actions-menu-1" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            <i class="ri-more-fill"></i>
-                                        </button>
-                                        <ul class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px] absolute right-0 mt-2"
-                                            aria-labelledby="actions-menu-1" role="menu">
-                                            <li>
-                                                <a href="#"
-                                                    class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50"
-                                                    role="menuitem">تعديل</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"
-                                                    class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50"
-                                                    role="menuitem">حذف</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr class="text-gray-700 dark:text-gray-100">
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    كودي فيشر
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    مستخدم
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    تسجيل دخول
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    2023-08-28 10:32
-                                </td>
-                                <td
-                                    class="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                    <div class="dropdown relative">
-                                        <button
-                                            class="dropdown-toggle block w-full bg-white hover:bg-gray-100 text-gray-600 border border-gray-200 rounded-md px-3 py-1 text-left text-sm"
-                                            type="button" id="actions-menu-2" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            <i class="ri-more-fill"></i>
-                                        </button>
-                                        <ul class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px] absolute right-0 mt-2"
-                                            aria-labelledby="actions-menu-2" role="menu">
-                                            <li>
-                                                <a href="#"
-                                                    class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50"
-                                                    role="menuitem">تعديل</a>
-                                            </li>
-                                            <li>
-                                                <a href="#"
-                                                    class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50"
-                                                    role="menuitem">حذف</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        // Basic dropdown toggle script
-        document.querySelectorAll('.dropdown-toggle').forEach(button => {
-            button.addEventListener('click', e => {
-                e.preventDefault();
-                const menu = button.nextElementSibling;
-                if (!menu) return;
-                menu.classList.toggle('hidden');
-                const expanded = button.getAttribute('aria-expanded') === 'true';
-                button.setAttribute('aria-expanded', !expanded);
-            });
-        });
-
-        // Optional: Close dropdowns when clicking outside
-        window.addEventListener('click', e => {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                if (!menu.classList.contains('hidden') && !menu.contains(e.target) && !menu
-                    .previousElementSibling.contains(e.target)) {
-                    menu.classList.add('hidden');
-                    menu.previousElementSibling.setAttribute('aria-expanded', 'false');
-                }
-            });
-        });
-    </script>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md lg:col-span-2">
-            <div class="flex justify-between mb-4 items-start">
-                <div class="font-medium">إحصائيات الطلبات</div>
-                <div class="dropdown">
+                {{-- <div class="dropdown">
                     <button type="button" class="dropdown-toggle text-gray-400 hover:text-gray-600"><i
                             class="ri-more-fill"></i></button>
                     <ul
@@ -398,10 +25,39 @@
                         <li>
                             <a href="#"
                                 class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">تسجيل
-                                خروج</a>
+                                الخروج</a>
                         </li>
                     </ul>
+                </div> --}}
+            </div>
+
+        </div>
+        <div class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
+            <div class="flex justify-between mb-4">
+                <div>
+                    <div class="text-2xl font-semibold mb-1">{{ count($parcels->where('status', 'pending')) }}
+                    </div>
+                    <div class="text-sm font-medium text-gray-400">قيد الانتظار</div>
                 </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
+            <div class="flex justify-between mb-6">
+                <div>
+                    <div class="text-2xl font-semibold mb-1">{{ count($parcels->where('status', 'canceled')) }}</div>
+                    <div class="text-sm font-medium text-gray-400">الملغاة</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md lg:col-span-2">
+            <div class="flex justify-between mb-4 items-start">
+                <div class="font-medium">إحصائيات الطلبات</div>
+
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                 <div class="rounded-md border border-dashed border-gray-200 p-4">
@@ -427,7 +83,7 @@
                         <span
                             class="p-1 rounded text-[12px] font-semibold bg-rose-500/10 text-rose-500 leading-none ml-1">-$130</span>
                     </div>
-                    <span class="text-gray-400 text-sm">ملغى</span>
+                    <span class="text-gray-400 text-sm">ملغي</span>
                 </div>
             </div>
             <div>
@@ -436,28 +92,8 @@
         </div>
         <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md">
             <div class="flex justify-between mb-4 items-start">
-                <div class="font-medium">الأرباح</div>
-                <div class="dropdown">
-                    <button type="button" class="dropdown-toggle text-gray-400 hover:text-gray-600"><i
-                            class="ri-more-fill"></i></button>
-                    <ul
-                        class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px]">
-                        <li>
-                            <a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">الملف
-                                الشخصي</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">الإعدادات</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-blue-500 hover:bg-gray-50">تسجيل
-                                خروج</a>
-                        </li>
-                    </ul>
-                </div>
+                <div class="font-medium">الشحنات</div>
+
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full min-w-[460px]">
@@ -468,55 +104,149 @@
                                 الخدمة</th>
                             <th
                                 class="text-[12px] uppercase tracking-wide font-medium text-gray-400 py-2 px-4 bg-gray-50 text-left">
-                                الربح</th>
+                                المندوب</th>
                             <th
                                 class="text-[12px] uppercase tracking-wide font-medium text-gray-400 py-2 px-4 bg-gray-50 text-left rounded-tr-md rounded-br-md">
                                 الحالة</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="py-2 px-4 border-b border-b-gray-50">
-                                <div class="flex items-center">
-                                    <img src="https://placehold.co/32x32" alt=""
-                                        class="w-8 h-8 rounded object-cover block">
-                                    <a href="#"
-                                        class="text-gray-600 text-sm font-medium hover:text-blue-500 ml-2 truncate">إنشاء
-                                        صفحة هبوط</a>
-                                </div>
-                            </td>
-                            <td class="py-2 px-4 border-b border-b-gray-50">
-                                <span class="text-[13px] font-medium text-emerald-500">+$235</span>
-                            </td>
-                            <td class="py-2 px-4 border-b border-b-gray-50">
-                                <span
-                                    class="inline-block p-1 rounded bg-emerald-500/10 text-emerald-500 font-medium text-[12px] leading-none">معلق</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 px-4 border-b border-b-gray-50">
-                                <div class="flex items-center">
-                                    <img src="https://placehold.co/32x32" alt=""
-                                        class="w-8 h-8 rounded object-cover block">
-                                    <a href="#"
-                                        class="text-gray-600 text-sm font-medium hover:text-blue-500 ml-2 truncate">إنشاء
-                                        صفحة هبوط</a>
-                                </div>
-                            </td>
-                            <td class="py-2 px-4 border-b border-b-gray-50">
-                                <span class="text-[13px] font-medium text-rose-500">-$235</span>
-                            </td>
-                            <td class="py-2 px-4 border-b border-b-gray-50">
-                                <span
-                                    class="inline-block p-1 rounded bg-rose-500/10 text-rose-500 font-medium text-[12px] leading-none">تم
-                                    السحب</span>
-                            </td>
-                        </tr>
-                        <!-- نفس تكرار الصفوف كما هو -->
+
+                        @foreach ($parcels as $parcel)
+                            <tr>
+                                <td class="py-2 px-4 border-b border-b-gray-50">
+                                    <div class="flex items-center">
+                                        <img src="https://placehold.co/32x32" alt=""
+                                            class="w-8 h-8 rounded object-cover block">
+                                        <span class="text-gray-600 text-sm font-medium ml-2 truncate">
+                                            #{{ $parcel->id }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="py-2 px-4 border-b border-b-gray-50">
+                                    <span class="text-[13px] font-medium text-gray-700">
+                                        {{ $parcel->courier->name ?? '—' }}
+                                    </span>
+                                </td>
+                                <td class="py-2 px-4 border-b border-b-gray-50">
+                                    @php
+                                        $statusClasses = [
+                                            'pending' => 'bg-yellow-400/10 text-yellow-500',
+                                            'delivered' => 'bg-green-500/10 text-green-500',
+                                            'canceled' => 'bg-rose-500/10 text-rose-500',
+                                        ];
+                                    @endphp
+                                    <span
+                                        class="inline-block p-1 rounded font-medium text-[12px] leading-none {{ $statusClasses[$parcel->status] ?? 'bg-gray-100 text-gray-500' }}">
+                                          {{ $parcel->status }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <script>
+        // start: Chart
+        @if (Route::current()->getName() == 'dashboard')
+
+            var parcels = @php  echo json_encode($parcels); @endphp
+
+            function generateNDays(n) {
+                const data = []
+                for (let i = 0; i < n; i++) {
+                    const date = new Date()
+                    date.setDate(date.getDate() - n + i + 1)
+                    data.push(date.toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                    }))
+                }
+                return data
+            }
+
+            const labels = generateNDays(7)
+
+            function getStatusCountsByDay(parcels, labels) {
+                const statusCounts = {
+                    pending: Array(labels.length).fill(0),
+                    delivered: Array(labels.length).fill(0),
+                    canceled: Array(labels.length).fill(0)
+                }
+
+                parcels.forEach(parcel => {
+                    const createdAt = new Date(parcel.created_at)
+                    const formattedDate = createdAt.toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                    })
+
+                    const labelIndex = labels.indexOf(formattedDate)
+                    if (labelIndex !== -1) {
+                        if (parcel.status === 'pending') statusCounts.pending[labelIndex]++
+                        if (parcel.status === 'delivered') statusCounts.delivered[labelIndex]++
+                        if (parcel.status === 'canceled') statusCounts.canceled[labelIndex]++
+                    }
+                })
+
+                return statusCounts
+            }
+
+            const statusCounts = getStatusCountsByDay(parcels, labels)
+            new Chart(document.getElementById('order-chart'), {
+                type: 'line',
+                data: {
+                    labels: generateNDays(7),
+                    datasets: [{
+                            label: 'نشط', // Active (i.e., pending/in_transit)
+                            data: statusCounts.pending,
+                            backgroundColor: 'rgba(59, 130, 246, 0.5)', // blue
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            fill: true,
+                            pointBackgroundColor: 'rgb(59, 130, 246)',
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgb(59 130 246 / .05)',
+                            tension: .2
+                        },
+                        {
+                            label: 'مكتمل', // Completed (delivered)
+                            data: statusCounts.delivered,
+                            backgroundColor: 'rgba(16, 185, 129, 0.5)', // green
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            fill: true,
+                            pointBackgroundColor: 'rgb(16, 185, 129)',
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgb(16 185 129 / .05)',
+                            tension: .2
+                        },
+                        {
+                            label: 'ملغي', // Canceled
+                            data: statusCounts.canceled,
+                            backgroundColor: 'rgba(244, 63, 94, 0.5)', // red
+                            borderColor: 'rgba(244, 63, 94, 1)',
+                            fill: true,
+                            pointBackgroundColor: 'rgb(244, 63, 94)',
+                            borderColor: 'rgb(244, 63, 94)',
+                            backgroundColor: 'rgb(244 63 94 / .05)',
+                            tension: .2
+                        },
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        @endif
+
+
+
+        // end: Chart
+    </script>
     </x-AdminApp-layout>

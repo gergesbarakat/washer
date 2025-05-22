@@ -76,8 +76,7 @@ class ProductController extends Controller
         $query = $request->get('q');
         $products = Product::with('category')->where('user_id', $request->user_id)
             ->where('name', 'like', "%$query%")
-            ->limit(10)
-            ->get();
+             ->get();
         return response()->json($products);
     }
     public function activate($id)
@@ -87,5 +86,13 @@ class ProductController extends Controller
         $hotel->save();
 
         return redirect()->route('admin.products.index')->with('success', 'product activated successfully.');
+    }
+    public function search(Request $request)
+    {
+        $query = $request->get('q');
+        $products = Product::with('category')->where('user_id', $request->user_id)
+            ->where('name', 'like', "%$query%")
+             ->get();
+        return response()->json($products);
     }
 }
